@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+from models.database import Database
+from models.medicion import Medicion
 
 
 class Application(tk.Frame):
@@ -20,6 +22,8 @@ class Application(tk.Frame):
 
         # ttk styles
         gui_style = ttk.Style()
+        gui_style.configure(
+            'TLabel', background=self.primary_color, foreground=self.white)
         gui_style.configure(
             'TFrame', background=self.primary_color, foreground=self.white,
             borderwidth=2)
@@ -71,7 +75,7 @@ class Application(tk.Frame):
         # Frame para sección de sensores
         sensores_frame = ttk.Frame(self.parent,
                                    padding=(10, 10),
-                                   width=320, height=205, style="TFrame")
+                                   width=320, height=230, style="TFrame")
         sensores_frame.place(x=sensores_x_pos, y=sensores_y_pos+40)
 
         # Posicionamiento de etiquetas dentro del frame
@@ -112,6 +116,12 @@ class Application(tk.Frame):
             sensores_frame, textvariable=self.conductividad,
             font=self.text_font, bg=self.primary_color, fg=self.display_color)
         self.conductividad_output.place(x=labels_x_pos+190, y=labels_y_pos+120)
+
+        bomba_guardar_medicion = tk.Button(sensores_frame,
+                                           text="Guardar medición",
+                                           command=self.guardar_medicion,
+                                           font=self.text_font)
+        bomba_guardar_medicion.place(x=labels_x_pos+125, y=labels_x_pos+150)
 
         self.parent.after(1000, self.reading_sensors)
 
@@ -203,7 +213,7 @@ class Application(tk.Frame):
 
     def seccion_bomba(self):
         # Posicionamiento
-        bomba_y_pos = 350
+        bomba_y_pos = 360
         bomba_x_pos = 10
 
         # Header sección de la bomba
@@ -297,8 +307,20 @@ class Application(tk.Frame):
 
         self.parent.after(1000, self.reading_sensors)
 
+    def guardar_medicion(self):
+        medicion = Medicion(
+            temperatura=self.temperatura,
+            oxigeno=self.oxigeno,
+            ph=self.ph,
+            conductividad=self.conductividad,
+            latitud=self.latitud,
+            longitud=self.longitud,
+        )
+        medicion.save()
+
 
 if __name__ == '__main__':
     root = tk.Tk()
+    Database.create_tables()
     app = Application(root)
     root.mainloop()
