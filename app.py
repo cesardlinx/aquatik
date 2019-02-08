@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 from models.database import Database
 from models.medicion import Medicion
+import RPi.GPIO as GPIO
+import time
+import serial
 
 
 class Application(tk.Frame):
@@ -59,6 +62,23 @@ class Application(tk.Frame):
         self.parent.geometry("700x500")
         self.parent.resizable(width=False, height=False)
         self.parent.config(background=self.background)
+
+    def init_gpio(self):
+        GPIO.setmode(GPIO.BOARD)
+        self.motor_A1 = 29  # color tomate y verde
+        self.motor_A2 = 31
+        self.motor_B1 = 33  # azul morado
+        self.motor_B2 = 35
+        self.motor_bomba = 37
+        self.Trig = 11
+        self.Echo = 13
+        GPIO.setup(self.motor_A1, GPIO.OUT)
+        GPIO.setup(self.motor_B1, GPIO.OUT)
+        GPIO.setup(self.motor_A2, GPIO.OUT)
+        GPIO.setup(self.motor_B2, GPIO.OUT)
+        GPIO.setup(self.motor_bomba, GPIO.OUT)
+        GPIO.setup(self.Trig, GPIO.OUT)
+        GPIO.setup(self.Echo, GPIO.IN)
 
     def seccion_sensores(self):
 
@@ -253,21 +273,59 @@ class Application(tk.Frame):
 
     def up(self):
         print('up')
+        GPIO.output(self.motor_A1, GPIO.HIGH)
+        GPIO.output(self.motor_A2, GPIO.LOW)
+        GPIO.output(self.motor_B1, GPIO.LOW)
+        GPIO.output(self.motor_B2, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(self.motor_A1, GPIO.LOW)
+        GPIO.output(self.motor_A2, GPIO.LOW)
+        GPIO.output(self.motor_B1, GPIO.LOW)
+        GPIO.output(self.motor_B2, GPIO.LOW)
 
     def down(self):
         print('down')
+        GPIO.output(self.motor_A1, GPIO.LOW)
+        GPIO.output(self.motor_A2, GPIO.HIGH)
+        GPIO.output(self.motor_B1, GPIO.HIGH)
+        GPIO.output(self.motor_B2, GPIO.LOW)
+        time.sleep(1)
+        GPIO.output(self.motor_A1, GPIO.LOW)
+        GPIO.output(self.motor_A2, GPIO.LOW)
+        GPIO.output(self.motor_B1, GPIO.LOW)
+        GPIO.output(self.motor_B2, GPIO.LOW)
 
     def left(self):
         print('left')
+        GPIO.output(self.motor_A1, GPIO.HIGH)
+        GPIO.output(self.motor_A2, GPIO.LOW)
+        GPIO.output(self.motor_B1, GPIO.HIGH)
+        GPIO.output(self.motor_B2, GPIO.LOW)
+        time.sleep(1)
+        GPIO.output(self.motor_A1, GPIO.LOW)
+        GPIO.output(self.motor_A2, GPIO.LOW)
+        GPIO.output(self.motor_B1, GPIO.LOW)
+        GPIO.output(self.motor_B2, GPIO.LOW)
 
     def right(self):
         print('right')
+        GPIO.output(self.motor_A1, GPIO.LOW)
+        GPIO.output(self.motor_A2, GPIO.HIGH)
+        GPIO.output(self.motor_B1, GPIO.LOW)
+        GPIO.output(self.motor_B2, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(self.motor_A1, GPIO.LOW)
+        GPIO.output(self.motor_A2, GPIO.LOW)
+        GPIO.output(self.motor_B1, GPIO.LOW)
+        GPIO.output(self.motor_B2, GPIO.LOW)
 
     def encender_bomba(self):
         print('bomba encendida')
+        GPIO.output(self.motor_bomba, GPIO.HIGH)
 
     def apagar_bomba(self):
         print('bomba apagada')
+        GPIO.output(self.motor_bomba, GPIO.LOW)
 
     def activar_automatico(self):
         print('función del automatico')
