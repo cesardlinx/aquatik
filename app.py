@@ -28,20 +28,12 @@ class Application(tk.Frame):
                                  writeTimeout=0)  # ensure non-blocking
         self.serBuffer = ""
 
-        # ttk styles
-        gui_style = ttk.Style()
-        gui_style.configure(
-            'TLabel', background=self.primary_color, foreground=self.white)
-        gui_style.configure(
-            'TFrame', background=self.primary_color, foreground=self.white,
-            borderwidth=2)
-
         # Logo
         logo_img = tk.PhotoImage(file="imgs/logo.gif")
 
-        logo = tk.Label(self.parent, image=logo_img, bg=self.background)
+        logo = tk.Label(self.parent, image=logo_img)
         logo.image = logo_img
-        logo.place(x=304, y=0)
+        logo.place(x=304, y=40)
 
         # Valores de los sensores
         self.temperatura = tk.StringVar()
@@ -64,9 +56,21 @@ class Application(tk.Frame):
     def init_window(self):
         """Método para configurar la ventana"""
         self.parent.title("Aplicación para Monitoreo del Agua")
-        self.parent.geometry("700x500")
+        self.parent.geometry("700x522")
         self.parent.resizable(width=False, height=False)
         self.parent.config(background=self.background)
+
+        self.notebook = ttk.Notebook(self.parent)
+        self.main_tab = ttk.Frame(self.notebook, width=700, height=500)
+        self.data_tab = ttk.Frame(self.notebook, width=700, height=500)
+        self.trends_tab = ttk.Frame(self.notebook, width=700, height=500)
+        self.trayectory_tab = ttk.Frame(self.notebook, width=700, height=500)
+
+        self.notebook.add(self.main_tab, text="Monitoreo")
+        self.notebook.add(self.data_tab, text="Datos")
+        self.notebook.add(self.trends_tab, text="Tendencias")
+        self.notebook.add(self.trayectory_tab, text="Desplazamiento")
+        self.notebook.place(x=0, y=0)
 
     def init_gpio(self):
         GPIO.setmode(GPIO.BOARD)
@@ -93,14 +97,15 @@ class Application(tk.Frame):
 
         # Header sección de sensores
         sensores_header = tk.Label(
-            self.parent, text="Parámetros",
-            font=self.header_font, bg=self.background)
+            self.main_tab, text="Parámetros",
+            font=self.header_font)
         sensores_header.place(x=sensores_x_pos+102.5, y=sensores_y_pos)
 
         # Frame para sección de sensores
-        sensores_frame = ttk.Frame(self.parent,
-                                   padding=(10, 10),
-                                   width=320, height=230, style="TFrame")
+        sensores_frame = tk.Frame(self.main_tab,
+                                  borderwidth=2, relief="sunken",
+                                  width=320, height=230,
+                                  bg=self.primary_color)
         sensores_frame.place(x=sensores_x_pos, y=sensores_y_pos+40)
 
         # Posicionamiento de etiquetas dentro del frame
@@ -157,18 +162,19 @@ class Application(tk.Frame):
 
         # Header sección de gps
         gps_header = tk.Label(
-            self.parent, text="GPS",
-            font=self.header_font, bg=self.background)
+            self.main_tab, text="GPS",
+            font=self.header_font)
         gps_header.place(x=gps_x_pos+135.5, y=gps_y_pos)
 
         # Frame para sección de gps
-        gps_frame = ttk.Frame(self.parent,
-                              padding=(10, 10),
-                              width=320, height=90, style="TFrame")
+        gps_frame = tk.Frame(self.main_tab,
+                             borderwidth=2, relief="sunken",
+                             width=320, height=90,
+                             bg=self.primary_color)
         gps_frame.place(x=gps_x_pos, y=gps_y_pos+40)
 
         # Posicionamiento de etiquetas dentro del frame
-        labels_y_pos = 2
+        labels_y_pos = 9
         labels_x_pos = 50
 
         latitud_label = tk.Label(
@@ -192,19 +198,20 @@ class Application(tk.Frame):
 
     def seccion_controles(self):
         # Posicionamiento
-        controles_y_pos = 240
+        controles_y_pos = 260
         controles_x_pos = 370
 
         # Header sección de controles
         controles_header = tk.Label(
-            self.parent, text="Control de Dirección",
-            font=self.header_font, bg=self.background)
+            self.main_tab, text="Control de Dirección",
+            font=self.header_font)
         controles_header.place(x=controles_x_pos+57.5, y=controles_y_pos)
 
         # Frame para sección de controles
-        controles_frame = ttk.Frame(self.parent,
+        controles_frame = ttk.Frame(self.main_tab,
+                                    borderwidth=2, relief="raised",
                                     padding=(10, 10),
-                                    width=320, height=320, style="TFrame")
+                                    width=320, height=320)
         controles_frame.place(x=controles_x_pos+81, y=controles_y_pos+40)
 
         # Botones
@@ -243,20 +250,20 @@ class Application(tk.Frame):
 
         # Header sección de la bomba
         bomba_header = tk.Label(
-            self.parent, text="Bomba",
-            font=self.header_font, bg=self.background)
+            self.main_tab, text="Bomba",
+            font=self.header_font)
         bomba_header.place(x=bomba_x_pos+124, y=bomba_y_pos)
 
         # Frame para sección de bomba
-        bomba_frame = ttk.Frame(self.parent,
-                                padding=(10, 10),
-                                width=320, height=90, style="TFrame")
+        bomba_frame = tk.Frame(self.main_tab,
+                               borderwidth=2, relief="raised",
+                               width=320, height=90)
         bomba_frame.place(x=bomba_x_pos, y=bomba_y_pos+40)
 
         # Pösicionamiento de botones
 
-        btns_x_pos = 0
-        btns_y_pos = 0
+        btns_x_pos = 8
+        btns_y_pos = 8
 
         # Botones para control de bomba
         bomba_on_btn = tk.Button(bomba_frame, text="Encender Bomba",
