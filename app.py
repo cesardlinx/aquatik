@@ -23,6 +23,11 @@ class Application(tk.Frame):
         self.secondary_color = "#8e44ad"
         self.init_window()
 
+        # Serial Buffer
+        self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0,
+                                 writeTimeout=0)  # ensure non-blocking
+        self.serBuffer = ""
+
         # ttk styles
         gui_style = ttk.Style()
         gui_style.configure(
@@ -336,34 +341,67 @@ class Application(tk.Frame):
         ph = self.ph.get()
         conductividad = self.conductividad.get()
 
-        latitud = self.latitud.get()
-        longitud = self.longitud.get()
+        while True:
+            # se intenta leer un caracter serialmente y decodificarlo
+            char = self.ser.read()
 
-        temperatura = 10 if not temperatura else temperatura
-        oxigeno = 30 if not oxigeno else oxigeno
-        ph = 1 if not ph else ph
-        conductividad = 15 if not conductividad else conductividad
+            try:
+                char = char.decode("utf-8")
+            except UnicodeDecodeError:
+                break
 
-        latitud = 151565 if not latitud else latitud
-        longitud = 155442 if not longitud else longitud
+            # si no se leyó nada sale del lazo
+            if len(char) == 0:
+                break
 
-        temperatura = int(temperatura) + 1
-        oxigeno = int(oxigeno) + 1
-        ph = int(ph) + 1
-        conductividad = int(conductividad) + 1
+            # si el caracter es un delimeter se lo quita
+            if char == '\r':
+                char = ''
 
-        latitud = int(latitud) + 1
-        longitud = int(longitud) + 1
+            """
+            Para cuando encuentra un fin de linea se toman los parámetros de
+            los sensores y se los despliegua, caso contrario se sigue agregando
+            caracteres al buffer
+            """
+            if char == '\n':
+                self.serBuffer += "\n"
 
-        self.temperatura.set('{}'.format(temperatura))
-        self.oxigeno.set('{}'.format(oxigeno))
-        self.ph.set('{}'.format(ph))
-        self.conductividad.set('{}'.format(conductividad))
+                datos = str(self.serBuffer).split(':')
 
-        self.latitud.set('{}'.format(latitud))
-        self.longitud.set('{}'.format(longitud))
+                parametros = [dato.strip() for dato in datos]
 
-        self.parent.after(1000, self.reading_sensors)
+                parametros = parametros[1:-1]
+
+                numero_datos = len(parametros)
+
+                # Lectura de parámetros
+                temperatura = parametros[0] if numero_datos > 0 and \
+                    parametros[0] else 0
+                ph = parametros[1] if numero_datos > 1 and \
+                    parametros[1] else 0
+                oxigeno = parametros[2] if numero_datos > 2 and \
+                    parametros[2] else 0
+                conductividad = parametros[3] if numero_datos > 3 and\
+                    parametros[3] else 0
+                latitud = parametros[4] if numero_datos > 4 and \
+                    parametros[4] else 0
+                longitud = parametros[5] if numero_datos > 5 and \
+                    parametros[5] else 0
+
+                self.temperatura.set('{}'.format(temperatura))
+                self.oxigeno.set('{}'.format(oxigeno))
+                self.ph.set('{}'.format(ph))
+                self.conductividad.set('{}'.format(conductividad))
+
+                self.latitud.set('{}'.format(latitud))
+                self.longitud.set('{}'.format(longitud))
+
+                self.serBuffer = ""  # borrar buffer
+            else:
+                self.serBuffer += str(char)  # añadir al buffer
+
+        # volver a ejecutar función
+        self.parent.after(10, self.reading_sensors)
 
     def guardar_medicion(self):
         medicion = Medicion(
