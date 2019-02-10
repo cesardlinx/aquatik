@@ -368,7 +368,5 @@ class MainFrame(tk.Frame):
             oxigeno=self.oxigeno,
             ph=self.ph,
             conductividad=self.conductividad,
-            latitud=self.latitud,
-            longitud=self.longitud,
         )
         medicion.save()

@@ -22,8 +22,6 @@ class Database(object):
             Oxigeno FLOAT(4,2) NOT NULL,
             pH FLOAT(4,2) NOT NULL,
             Conductividad FLOAT(4,2) NOT NULL,
-            Latitud DECIMAL(5,3) NOT NULL,
-            Longitud DECIMAL(5,3) NOT NULL,
             Fecha DATETIME DEFAULT CURRENT_TIMESTAMP
         );
         """
