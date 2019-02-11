@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 import RPi.GPIO as GPIO
-from models.medicion import Medicion
 from styles.main_styles import Style
 import time
 import serial
@@ -99,10 +98,11 @@ class MainFrame(tk.Frame):
 
         bomba_guardar_medicion = tk.Button(sensores_frame,
                                            text="Guardar medición",
-                                           command=self.guardar_medicion,
                                            font=Style.TEXT_FONT)
-        # bomba_guardar_medicion.bind('<Button-1>', self.medicion_almacenada)
-        # bomba_guardar_medicion.bind('<Key>', self.medicion_almacenada)
+        bomba_guardar_medicion.bind('<Button-1>',
+                                    self.parent.almacenar_medicion_click)
+        bomba_guardar_medicion.bind('<Key>',
+                                    self.parent.almacenar_medicion_key)
         bomba_guardar_medicion.place(x=labels_x_pos+125, y=labels_x_pos+150)
 
         self.parent.after(1000, self.reading_sensors)
@@ -363,12 +363,3 @@ class MainFrame(tk.Frame):
 
         # volver a ejecutar función
         self.parent.after(10, self.reading_sensors)
-
-    def guardar_medicion(self):
-        medicion = Medicion(
-            temperatura=self.temperatura,
-            oxigeno=self.oxigeno,
-            ph=self.ph,
-            conductividad=self.conductividad,
-        )
-        medicion.save()

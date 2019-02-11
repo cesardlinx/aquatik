@@ -56,7 +56,6 @@ class DataFrame(tk.Frame):
 
         self.show_data(mediciones)
         self.table.place(x=x_pos, y=y_pos)
-        self.after(1000, self.update_table)
 
     def update_table(self):
         old_data = self.table.get_children()
@@ -64,7 +63,6 @@ class DataFrame(tk.Frame):
             self.table.delete(data)
         mediciones = self.get_mediciones()
         self.show_data(mediciones)
-        self.after(1000, self.update_table)
 
     def show_data(self, mediciones):
         for idx, medicion in enumerate(mediciones):

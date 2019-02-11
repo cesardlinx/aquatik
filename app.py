@@ -1,7 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
 from frames.main import MainFrame
 from frames.data import DataFrame
+from frames.menu import MenuNotebook
 from models.database import Database
 import RPi.GPIO as GPIO
 from styles.main_styles import Style
@@ -14,13 +14,6 @@ class Application(tk.Frame):
         self.init_window()
         self.init_gpio()
 
-        # Logo
-        logo_img = tk.PhotoImage(file="imgs/logo.gif")
-
-        logo = tk.Label(self.parent, image=logo_img)
-        logo.image = logo_img
-        logo.place(x=304, y=40)
-
     def init_window(self):
         """Método para configurar la ventana"""
         self.parent.title("Aplicación para Monitoreo del Agua")
@@ -30,8 +23,6 @@ class Application(tk.Frame):
                                             self.window_height+22))
         self.parent.resizable(width=False, height=False)
         self.parent.config(background=Style.BACKGROUND_COLOR)
-
-        self.notebook = ttk.Notebook(self.parent)
 
     def init_gpio(self):
         GPIO.setmode(GPIO.BOARD)
@@ -50,16 +41,13 @@ class Application(tk.Frame):
         GPIO.setup(self.Trig, GPIO.OUT)
         GPIO.setup(self.Echo, GPIO.IN)
 
-    # def medicion_almacenada(self, event):
-    #     print(event)
-    #     print('medicion almacenada')
-
-
 
 if __name__ == '__main__':
     root = tk.Tk()
     Database.create_tables()
     app = Application(root)
+
+    app.notebook = MenuNotebook(root)
 
     # Notebook pages (tabs)
     window_width = app.window_width
