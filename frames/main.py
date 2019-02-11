@@ -1,9 +1,13 @@
+import time
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
+
+import serial
+from serial.serialutil import SerialException
+
 import RPi.GPIO as GPIO
 from styles.main_styles import Style
-import time
-import serial
 
 
 class MainFrame(tk.Frame):
@@ -17,10 +21,8 @@ class MainFrame(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        # Serial Buffer
-        self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0,
-                                 writeTimeout=0)  # asegura el no bloqueo
-        self.serial_buffer = ""
+        self.serial_conn = False
+        self.init_serial()
 
         # Valores de los sensores
         self.temperatura = tk.StringVar()
@@ -39,6 +41,20 @@ class MainFrame(tk.Frame):
         self.seccion_gps()
         self.seccion_controles()
         self.seccion_bomba()
+
+    def init_serial(self):
+        try:
+            # Serial Buffer
+            self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0,
+                                     writeTimeout=0)  # asegura el no bloqueo
+            self.serial_buffer = ""
+        except SerialException:
+            self.serial_conn = False
+            messagebox.showwarning('Desconexión!',
+                                   'No se ha establecido una conexión con los '
+                                   'sensores.')
+        else:
+            self.serial_conn = True
 
     def seccion_sensores(self):
         """Sección donde se muestra los parámetros del agua."""
@@ -111,7 +127,7 @@ class MainFrame(tk.Frame):
                                     self.parent.almacenar_medicion_key)
         bomba_guardar_medicion.place(x=labels_x_pos+125, y=labels_x_pos+150)
 
-        self.parent.after(1000, self.read_sensors)
+        self.parent.after(10, self.read_sensors)
 
     def seccion_gps(self):
         """Sección donde se muestra la posición del dron acuático."""
@@ -314,69 +330,79 @@ class MainFrame(tk.Frame):
 
     def read_sensors(self):
         """Método para la lectura de sensores"""
-        temperatura = self.temperatura.get()
-        oxigeno = self.oxigeno.get()
-        ph = self.ph.get()
-        conductividad = self.conductividad.get()
-
-        while True:
-            # se intenta leer un caracter serialmente y decodificarlo
-            char = self.ser.read()
+        if not self.serial_conn:
+            self.init_serial()
+        else:
+            temperatura = self.temperatura.get()
+            oxigeno = self.oxigeno.get()
+            ph = self.ph.get()
+            conductividad = self.conductividad.get()
 
             try:
-                char = char.decode("utf-8")
-            except UnicodeDecodeError:
-                break
 
-            # si no se leyó nada sale del lazo
-            if len(char) == 0:
-                break
+                while True:
+                    # se intenta leer un caracter serialmente y decodificarlo
+                    char = self.ser.read()
 
-            # si el caracter es un delimeter se lo quita
-            if char == '\r':
-                char = ''
+                    try:
+                        char = char.decode("utf-8")
+                    except UnicodeDecodeError:
+                        break
 
-            """
-            Para cuando encuentra un fin de linea se toman los parámetros de
-            los sensores y se los despliegua, caso contrario se sigue agregando
-            caracteres al buffer
-            """
-            if char == '\n':
-                self.serial_buffer += "\n"
+                    # si no se leyó nada sale del lazo
+                    if len(char) == 0:
+                        break
 
-                datos = str(self.serial_buffer).split(':')
+                    # si el caracter es un delimeter se lo quita
+                    if char == '\r':
+                        char = ''
 
-                parametros = [dato.strip() for dato in datos]
+                    """
+                    Para cuando encuentra un fin de linea se toman los
+                    parámetros de los sensores y se los despliegua, caso
+                    contrario se sigue agregando caracteres al buffer.
+                    """
+                    if char == '\n':
+                        self.serial_buffer += "\n"
 
-                parametros = parametros[1:-1]
+                        datos = str(self.serial_buffer).split(':')
 
-                numero_datos = len(parametros)
+                        parametros = [dato.strip() for dato in datos]
 
-                # Lectura de parámetros
-                temperatura = parametros[0] if numero_datos > 0 and \
-                    parametros[0] else 0
-                ph = parametros[1] if numero_datos > 1 and \
-                    parametros[1] else 0
-                oxigeno = parametros[2] if numero_datos > 2 and \
-                    parametros[2] else 0
-                conductividad = parametros[3] if numero_datos > 3 and\
-                    parametros[3] else 0
-                latitud = parametros[4] if numero_datos > 4 and \
-                    parametros[4] else 0
-                longitud = parametros[5] if numero_datos > 5 and \
-                    parametros[5] else 0
+                        parametros = parametros[1:-1]
 
-                self.temperatura.set('{}'.format(temperatura))
-                self.oxigeno.set('{}'.format(oxigeno))
-                self.ph.set('{}'.format(ph))
-                self.conductividad.set('{}'.format(conductividad))
+                        numero_datos = len(parametros)
 
-                self.latitud.set('{}'.format(latitud))
-                self.longitud.set('{}'.format(longitud))
+                        # Lectura de parámetros
+                        temperatura = parametros[0] if numero_datos > 0 and \
+                            parametros[0] else 0
+                        ph = parametros[1] if numero_datos > 1 and \
+                            parametros[1] else 0
+                        oxigeno = parametros[2] if numero_datos > 2 and \
+                            parametros[2] else 0
+                        conductividad = parametros[3] if numero_datos > 3 and\
+                            parametros[3] else 0
+                        latitud = parametros[4] if numero_datos > 4 and \
+                            parametros[4] else 0
+                        longitud = parametros[5] if numero_datos > 5 and \
+                            parametros[5] else 0
 
-                self.serial_buffer = ""  # borrar buffer
-            else:
-                self.serial_buffer += str(char)  # añadir al buffer
+                        self.temperatura.set('{}'.format(temperatura))
+                        self.oxigeno.set('{}'.format(oxigeno))
+                        self.ph.set('{}'.format(ph))
+                        self.conductividad.set('{}'.format(conductividad))
+
+                        self.latitud.set('{}'.format(latitud))
+                        self.longitud.set('{}'.format(longitud))
+
+                        self.serial_buffer = ""  # borrar buffer
+                    else:
+                        self.serial_buffer += str(char)  # añadir al buffer
+            except SerialException:
+                self.serial_conn = False
+                messagebox.showwarning('Desconexión!',
+                                       'No se ha establecido una conexión '
+                                       'con los sensores.')
 
         # volver a ejecutar función
         self.parent.after(10, self.read_sensors)
