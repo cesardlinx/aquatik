@@ -23,3 +23,12 @@ class Medicion(object):
         db.close()
         messagebox.showinfo('Medición almacenada!',
                             'La medición ha sido almacenada exitosamente.')
+
+    @classmethod
+    def all(self):
+        db = Database.connect()
+        cursor = db.cursor()
+        cursor.execute('''SELECT * FROM mediciones''')
+        mediciones = cursor.fetchall()
+        db.close()
+        return mediciones

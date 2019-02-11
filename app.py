@@ -50,6 +50,11 @@ class Application(tk.Frame):
         GPIO.setup(self.Trig, GPIO.OUT)
         GPIO.setup(self.Echo, GPIO.IN)
 
+    # def medicion_almacenada(self, event):
+    #     print(event)
+    #     print('medicion almacenada')
+
+
 
 if __name__ == '__main__':
     root = tk.Tk()

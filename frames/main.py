@@ -101,6 +101,8 @@ class MainFrame(tk.Frame):
                                            text="Guardar medición",
                                            command=self.guardar_medicion,
                                            font=Style.TEXT_FONT)
+        # bomba_guardar_medicion.bind('<Button-1>', self.medicion_almacenada)
+        # bomba_guardar_medicion.bind('<Key>', self.medicion_almacenada)
         bomba_guardar_medicion.place(x=labels_x_pos+125, y=labels_x_pos+150)
 
         self.parent.after(1000, self.reading_sensors)
