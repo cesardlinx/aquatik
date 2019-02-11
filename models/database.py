@@ -2,9 +2,12 @@ import sqlite3
 
 
 class Database(object):
-
+    """Clase que se encarga del manejo de la base de datos, crea las tablas y
+    la conexión
+    """
     @classmethod
     def connect(cls):
+        """Crea la conexión a la base de datos"""
         try:
             db = sqlite3.connect('db.sqlite3')
         except sqlite3.Error as e:
@@ -15,6 +18,7 @@ class Database(object):
 
     @classmethod
     def create_tables(cls):
+        """Crea las tablas necesarias para el almacenamiento"""
         create_mediciones_table = """
         CREATE TABLE IF NOT EXISTS mediciones (
             IdMedicion INTEGER PRIMARY KEY,

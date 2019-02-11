@@ -8,6 +8,7 @@ from styles.main_styles import Style
 
 
 class Application(tk.Frame):
+    """Aplicación para monitoreo de agua"""
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -25,6 +26,7 @@ class Application(tk.Frame):
         self.parent.config(background=Style.BACKGROUND_COLOR)
 
     def init_gpio(self):
+        """Inicialización de pines GPIO para control de motor y de bomba"""
         GPIO.setmode(GPIO.BOARD)
         self.motor_A1 = 29  # color tomate y verde
         self.motor_A2 = 31
@@ -47,9 +49,9 @@ if __name__ == '__main__':
     Database.create_tables()
     app = Application(root)
 
+    # Notebook pages (tabs)
     app.notebook = MenuNotebook(root)
 
-    # Notebook pages (tabs)
     window_width = app.window_width
     window_height = app.window_height
 

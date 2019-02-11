@@ -11,6 +11,7 @@ class Medicion(object):
         self.conductividad = kwargs['conductividad']
 
     def save(self):
+        """Almacenado de mediciones"""
         db = Database.connect()
         cursor = db.cursor()
         medidas = (self.temperatura.get(), self.oxigeno.get(), self.ph.get(),
@@ -26,6 +27,7 @@ class Medicion(object):
 
     @classmethod
     def all(self):
+        """Obtención de TODAS las mediciones en la base de datos."""
         db = Database.connect()
         cursor = db.cursor()
         cursor.execute('''SELECT * FROM mediciones''')

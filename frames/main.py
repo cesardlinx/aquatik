@@ -7,6 +7,12 @@ import serial
 
 
 class MainFrame(tk.Frame):
+    """
+    Pestaña principal que contiene 4 secciones, sensores (Donde se mide todos
+    los parámetros del agua), gps (en donde se obtiene información de la
+    latitud y longitud), controles (para el control direccional del dron
+    acuático) y bomba (donde se controla la bomba de succión de agua)
+    """
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -35,7 +41,7 @@ class MainFrame(tk.Frame):
         self.seccion_bomba()
 
     def seccion_sensores(self):
-
+        """Sección donde se muestra los parámetros del agua."""
         # Posicionamiento
         sensores_y_pos = 80
         sensores_x_pos = 10
@@ -105,9 +111,10 @@ class MainFrame(tk.Frame):
                                     self.parent.almacenar_medicion_key)
         bomba_guardar_medicion.place(x=labels_x_pos+125, y=labels_x_pos+150)
 
-        self.parent.after(1000, self.reading_sensors)
+        self.parent.after(1000, self.read_sensors)
 
     def seccion_gps(self):
+        """Sección donde se muestra la posición del dron acuático."""
         # Posicionamiento
         gps_y_pos = 80
         gps_x_pos = 370
@@ -151,6 +158,7 @@ class MainFrame(tk.Frame):
         self.longitud_output.place(x=labels_x_pos+80, y=labels_y_pos+40)
 
     def seccion_controles(self):
+        """Sección donde se controla la dirección del dron"""
         # Posicionamiento
         controles_y_pos = 260
         controles_x_pos = 370
@@ -198,6 +206,7 @@ class MainFrame(tk.Frame):
         button_down.grid(column=1, row=2)
 
     def seccion_bomba(self):
+        """Sección donde se controla la bomba de succión de agua"""
         # Posicionamiento
         bomba_y_pos = 360
         bomba_x_pos = 10
@@ -238,6 +247,7 @@ class MainFrame(tk.Frame):
         automatico.place(x=btns_x_pos+90, y=btns_y_pos+45)
 
     def up(self):
+        """Método para que el dron avance recto"""
         print('up')
         GPIO.output(self.motor_A1, GPIO.HIGH)
         GPIO.output(self.motor_A2, GPIO.LOW)
@@ -250,6 +260,7 @@ class MainFrame(tk.Frame):
         GPIO.output(self.motor_B2, GPIO.LOW)
 
     def down(self):
+        """Método para retroceder"""
         print('down')
         GPIO.output(self.motor_A1, GPIO.LOW)
         GPIO.output(self.motor_A2, GPIO.HIGH)
@@ -262,6 +273,7 @@ class MainFrame(tk.Frame):
         GPIO.output(self.motor_B2, GPIO.LOW)
 
     def left(self):
+        """Método para que el dron gire a la izquierda"""
         print('left')
         GPIO.output(self.motor_A1, GPIO.HIGH)
         GPIO.output(self.motor_A2, GPIO.LOW)
@@ -274,6 +286,7 @@ class MainFrame(tk.Frame):
         GPIO.output(self.motor_B2, GPIO.LOW)
 
     def right(self):
+        """Método para que el dron gire a la derecha"""
         print('right')
         GPIO.output(self.motor_A1, GPIO.LOW)
         GPIO.output(self.motor_A2, GPIO.HIGH)
@@ -286,17 +299,21 @@ class MainFrame(tk.Frame):
         GPIO.output(self.motor_B2, GPIO.LOW)
 
     def encender_bomba(self):
+        """Método para encender la bomba de succión"""
         print('bomba encendida')
         GPIO.output(self.motor_bomba, GPIO.HIGH)
 
     def apagar_bomba(self):
+        """Método para apagar la bomba de succión"""
         print('bomba apagada')
         GPIO.output(self.motor_bomba, GPIO.LOW)
 
     def activar_automatico(self):
+        """Método para activar el modo automático del dron"""
         print('función del automatico')
 
-    def reading_sensors(self):
+    def read_sensors(self):
+        """Método para la lectura de sensores"""
         temperatura = self.temperatura.get()
         oxigeno = self.oxigeno.get()
         ph = self.ph.get()
@@ -362,4 +379,4 @@ class MainFrame(tk.Frame):
                 self.serial_buffer += str(char)  # añadir al buffer
 
         # volver a ejecutar función
-        self.parent.after(10, self.reading_sensors)
+        self.parent.after(10, self.read_sensors)

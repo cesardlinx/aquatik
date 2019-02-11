@@ -5,13 +5,14 @@ from models.medicion import Medicion
 
 
 class DataFrame(tk.Frame):
+    """Pestaña para mostrar las mediciones realizadas"""
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.init_frame()
 
     def init_frame(self):
-
+        """Inicialización de widgets en el frame."""
         # Posicionamiento
         label_x_pos = 240.5
         label_y_pos = 100
@@ -58,6 +59,7 @@ class DataFrame(tk.Frame):
         self.table.place(x=x_pos, y=y_pos)
 
     def update_table(self):
+        """Método para actualizar tabla de mediciones"""
         old_data = self.table.get_children()
         for data in old_data:
             self.table.delete(data)
@@ -65,12 +67,12 @@ class DataFrame(tk.Frame):
         self.show_data(mediciones)
 
     def show_data(self, mediciones):
+        """Método para mostrar tabla de mediciones"""
         for idx, medicion in enumerate(mediciones):
             self.table.insert("", idx, values=medicion)
 
     def get_mediciones(self):
+        """Método para obtener las mediciones de la base de datos"""
         mediciones = [(idx+1,) + medicion[1:] for idx, medicion in
                       enumerate(Medicion.all())]
         return mediciones
-
-
