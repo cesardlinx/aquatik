@@ -20,6 +20,7 @@ class MainFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
+        Style.insert_logo(self)
 
         self.serial_conn = False
         self.init_serial()
@@ -59,8 +60,7 @@ class MainFrame(tk.Frame):
     def seccion_sensores(self):
         """Sección donde se muestra los parámetros del agua."""
         # Posicionamiento
-        sensores_y_pos = 80
-        sensores_x_pos = 10
+        sensores_x_pos, sensores_y_pos = 10, 80
 
         # Header sección de sensores
         sensores_header = tk.Label(
@@ -76,8 +76,7 @@ class MainFrame(tk.Frame):
         sensores_frame.place(x=sensores_x_pos, y=sensores_y_pos+40)
 
         # Posicionamiento de etiquetas dentro del frame
-        labels_y_pos = 15
-        labels_x_pos = 20
+        labels_x_pos, labels_y_pos = 20, 15
 
         temperatura_label = tk.Label(
             sensores_frame, text="Temperatura:",
@@ -132,8 +131,7 @@ class MainFrame(tk.Frame):
     def seccion_gps(self):
         """Sección donde se muestra la posición del dron acuático."""
         # Posicionamiento
-        gps_y_pos = 80
-        gps_x_pos = 370
+        gps_x_pos, gps_y_pos = 370, 80
 
         # Header sección de gps
         gps_header = tk.Label(
@@ -149,8 +147,7 @@ class MainFrame(tk.Frame):
         gps_frame.place(x=gps_x_pos, y=gps_y_pos+40)
 
         # Posicionamiento de etiquetas dentro del frame
-        labels_y_pos = 9
-        labels_x_pos = 50
+        labels_x_pos, labels_y_pos = 50, 9
 
         latitud_label = tk.Label(
             gps_frame, text="Latitud:",
@@ -176,8 +173,7 @@ class MainFrame(tk.Frame):
     def seccion_controles(self):
         """Sección donde se controla la dirección del dron"""
         # Posicionamiento
-        controles_y_pos = 260
-        controles_x_pos = 370
+        controles_x_pos, controles_y_pos = 370, 260
 
         # Header sección de controles
         controles_header = tk.Label(
@@ -224,8 +220,7 @@ class MainFrame(tk.Frame):
     def seccion_bomba(self):
         """Sección donde se controla la bomba de succión de agua"""
         # Posicionamiento
-        bomba_y_pos = 360
-        bomba_x_pos = 10
+        bomba_x_pos, bomba_y_pos = 10, 360
 
         # Header sección de la bomba
         bomba_header = tk.Label(
@@ -240,9 +235,7 @@ class MainFrame(tk.Frame):
         bomba_frame.place(x=bomba_x_pos, y=bomba_y_pos+40)
 
         # Pösicionamiento de botones
-
-        btns_x_pos = 8
-        btns_y_pos = 8
+        btns_x_pos, btns_y_pos = 8, 8
 
         # Botones para control de bomba
         bomba_on_btn = tk.Button(bomba_frame, text="Encender Bomba",

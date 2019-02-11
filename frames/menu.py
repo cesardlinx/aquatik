@@ -1,4 +1,3 @@
-import tkinter as tk
 from tkinter import ttk
 from models.medicion import Medicion
 
@@ -8,12 +7,6 @@ class MenuNotebook(ttk.Notebook):
     def __init__(self, parent, *args, **kwargs):
         ttk.Notebook.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-        # Logo
-        logo_img = tk.PhotoImage(file="imgs/logo.gif")
-
-        self.logo = tk.Label(self.parent, image=logo_img)
-        self.logo.image = logo_img
-        self.logo.place(x=304, y=40)
 
     def almacenar_medicion_click(self, event):
         """Método llamado al hacer click sobre el botón almacenar medición"""
@@ -44,3 +37,12 @@ class MenuNotebook(ttk.Notebook):
 
         data_tab = self.winfo_children()[1]
         data_tab.update_table()
+
+        temperatura_tab = self.winfo_children()[2]
+        temperatura_tab.update_graph()
+        ph_tab = self.winfo_children()[3]
+        ph_tab.update_graph()
+        oxigeno_tab = self.winfo_children()[4]
+        oxigeno_tab.update_graph()
+        conductividad_tab = self.winfo_children()[5]
+        conductividad_tab.update_graph()

@@ -10,12 +10,12 @@ class DataFrame(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.init_frame()
+        Style.insert_logo(self)
 
     def init_frame(self):
         """Inicialización de widgets en el frame."""
         # Posicionamiento
-        label_x_pos = 240.5
-        label_y_pos = 100
+        label_x_pos, label_y_pos = 240.5, 100
 
         # Header
         self.label_header = tk.Label(
@@ -24,8 +24,7 @@ class DataFrame(tk.Frame):
         self.label_header.place(x=label_x_pos, y=label_y_pos)
 
         # Posicionamiento de la tabla
-        x_pos = 31.5
-        y_pos = 150
+        x_pos, y_pos = 31.5, 150
 
         self.table = ttk.Treeview(self, height=15)
         self.table['columns'] = ['id', 'temperatura', 'oxigeno', 'ph',

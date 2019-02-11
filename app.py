@@ -1,6 +1,7 @@
 import tkinter as tk
 from frames.main import MainFrame
 from frames.data import DataFrame
+from frames.graph import GraphFrame
 from frames.menu import MenuNotebook
 from models.database import Database
 import RPi.GPIO as GPIO
@@ -59,9 +60,22 @@ if __name__ == '__main__':
                          height=window_height)
     data_tab = DataFrame(app.notebook, width=window_width,
                          height=window_height)
+    temperatura_tab = GraphFrame(app.notebook, 'temperatura',
+                                 width=window_width,
+                                 height=window_height)
+    ph_tab = GraphFrame(app.notebook, 'ph', width=window_width,
+                        height=window_height)
+    oxigeno_tab = GraphFrame(app.notebook, 'oxigeno', width=window_width,
+                             height=window_height)
+    conductividad_tab = GraphFrame(app.notebook, 'conductividad',
+                                   width=window_width, height=window_height)
 
     app.notebook.add(main_tab, text="Monitoreo")
-    app.notebook.add(data_tab, text="Datos")
+    app.notebook.add(data_tab, text="Mediciones")
+    app.notebook.add(temperatura_tab, text="Temperatura")
+    app.notebook.add(ph_tab, text="pH")
+    app.notebook.add(oxigeno_tab, text="Oxigeno Disuelto")
+    app.notebook.add(conductividad_tab, text="Conductividad")
 
     app.notebook.place(x=0, y=0)
 
