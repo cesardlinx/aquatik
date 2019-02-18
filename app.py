@@ -14,6 +14,20 @@ class Application(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.init_window()
+        self.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+        # Notebook pages (tabs)
+        self.notebook = MenuNotebook(self)
+
+        main_tab = MainFrame(self.notebook, width=self.window_width,
+                             height=self.window_height)
+        data_tab = DataFrame(self.notebook, width=self.window_width,
+                             height=self.window_height)
+
+        self.notebook.add(main_tab, text="Monitoreo")
+        self.notebook.add(data_tab, text="Datos")
+
+        self.notebook.place(x=0, y=0)
 
     def init_window(self):
         """Método para configurar la ventana"""
@@ -30,21 +44,4 @@ if __name__ == '__main__':
     root = tk.Tk()
     Database.create_tables()
     app = Application(root)
-
-    # Notebook pages (tabs)
-    app.notebook = MenuNotebook(root)
-
-    window_width = app.window_width
-    window_height = app.window_height
-
-    main_tab = MainFrame(app.notebook, width=window_width,
-                         height=window_height)
-    data_tab = DataFrame(app.notebook, width=window_width,
-                         height=window_height)
-
-    app.notebook.add(main_tab, text="Monitoreo")
-    app.notebook.add(data_tab, text="Datos")
-
-    app.notebook.place(x=0, y=0)
-
-    root.mainloop()
+    app.mainloop()
