@@ -1,13 +1,11 @@
 import time
+import serial
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
-
-import serial
-from serial.serialutil import SerialException
-
 import RPi.GPIO as GPIO
+from tkinter import messagebox
 from styles.main_styles import Style
+from serial.serialutil import SerialException
 
 
 class MainFrame(tk.Frame):
@@ -23,6 +21,7 @@ class MainFrame(tk.Frame):
 
         self.serial_conn = False
         self.init_serial()
+        self.init_gpio()
 
         # Valores de los sensores
         self.temperatura = tk.StringVar()
@@ -41,6 +40,25 @@ class MainFrame(tk.Frame):
         self.seccion_gps()
         self.seccion_controles()
         self.seccion_bomba()
+
+    def init_gpio(self):
+        """Inicialización de pines GPIO para control de motor y de bomba"""
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        self.motor_A1 = 29  # color tomate y verde
+        self.motor_A2 = 31
+        self.motor_B1 = 33  # azul morado
+        self.motor_B2 = 35
+        self.motor_bomba = 37
+        self.Trig = 11
+        self.Echo = 13
+        GPIO.setup(self.motor_A1, GPIO.OUT)
+        GPIO.setup(self.motor_B1, GPIO.OUT)
+        GPIO.setup(self.motor_A2, GPIO.OUT)
+        GPIO.setup(self.motor_B2, GPIO.OUT)
+        GPIO.setup(self.motor_bomba, GPIO.OUT)
+        GPIO.setup(self.Trig, GPIO.OUT)
+        GPIO.setup(self.Echo, GPIO.IN)
 
     def init_serial(self):
         try:
