@@ -6,9 +6,9 @@ working_path = os.getcwd()
 
 def main():
     """Main function"""
+    path = 'frames/main.py'
     try:
-        path = sys.argv[1]
-        on_off = sys.argv[2]
+        on_off = sys.argv[1]
     except IndexError:
         print('No ha escrito los argumentos necesarios')
         sys.exit()
@@ -24,21 +24,24 @@ def main():
         if on_off == 'off':
             rewrited_contents = ['# {}'.format(line) if '#' not in line
                                  and ('GPIO' in line
-                                 or 'time.sleep' in line)
+                                 or 'time.sleep' in line
+                                 or 'camera' in line)
                                  else line for line in
                                  list_contents]
         elif on_off == 'on':
             rewrited_contents = [line[2:] if line[:2] == '# '
                                  and ('GPIO' in line
-                                 or 'time.sleep' in line)
+                                 or 'time.sleep' in line
+                                 or 'camera' in line)
                                  else line[1:] if line[0] == '#'
                                  and ('GPIO' in line
-                                 or 'time.sleep' in line)
+                                 or 'time.sleep' in line
+                                 or 'camera' in line)
                                  else line
                                  for line in list_contents]
         else:
             print('Debe escribir si desea agregar los comentarios al GPIO '
-                    'o quitarlos')
+                  'time y camara o quitarlos')
 
         string_contents = ''.join(rewrited_contents)
 
