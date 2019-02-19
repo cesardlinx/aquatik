@@ -245,7 +245,8 @@ class MainFrame(tk.Frame):
         down_img = tk.PhotoImage(file="imgs/down.gif")
         left_img = tk.PhotoImage(file="imgs/left.gif")
         right_img = tk.PhotoImage(file="imgs/right.gif")
-        self.stop_img = tk.PhotoImage(file="imgs/stop.gif")
+        stop_img = tk.PhotoImage(file="imgs/stop.gif")
+        self.stop_rec_img = tk.PhotoImage(file="imgs/stop_rec.gif")
 
         button_up = tk.Button(controles_frame, image=up_img, command=self.up,
                               height=40, width=40)
@@ -277,9 +278,9 @@ class MainFrame(tk.Frame):
         stop_label = tk.Label(self, text="Paro", font=Style.TEXT_FONT)
         stop_label.place(relx=stop_x, rely=stop_y, anchor=tk.CENTER)
 
-        button_stop = tk.Button(self, image=self.stop_img,
+        button_stop = tk.Button(self, image=stop_img,
                                 command=self.stop)
-        button_stop.image = self.stop_img
+        button_stop.image = stop_img
         button_stop.place(x=controles_x_pos+225, y=controles_y_pos+160)
 
     def seccion_bomba(self):
@@ -347,7 +348,7 @@ class MainFrame(tk.Frame):
         pos_y = 0.94
 
         self.camaras = it.cycle([camara_img_on, camara_img])
-        self.record_imgs = it.cycle([self.stop_img, record_img])
+        self.record_imgs = it.cycle([self.stop_rec_img, record_img])
         self.camara_methods = it.cycle([self.camara_on, self.camara_off])
         self.record_methods = it.cycle([self.start_recording,
                                         self.stop_recording])
@@ -355,7 +356,8 @@ class MainFrame(tk.Frame):
         self.camara_btn = tk.Button(self, image=camara_img,
                                     command=self.camara)
         self.camara_btn.image = camara_img_on
-        self.camara_btn.place(relx=pos_x-0.1, rely=pos_y, anchor=tk.CENTER)
+        self.camara_btn.place(relx=pos_x-0.1, rely=pos_y, anchor=tk.CENTER,
+                              width=56, height=56)
 
         self.picture_btn = tk.Button(self, image=picture_img,
                                      command=self.take_picture)
