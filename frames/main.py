@@ -1,11 +1,15 @@
 import time
 import serial
+import itertools as it
 import tkinter as tk
 from tkinter import ttk
 import RPi.GPIO as GPIO
 from tkinter import messagebox
 from styles.main_styles import Style
 from serial.serialutil import SerialException
+
+from picamera import PiCamera
+camera = PiCamera()
 
 
 class MainFrame(tk.Frame):
@@ -40,6 +44,7 @@ class MainFrame(tk.Frame):
         self.seccion_gps()
         self.seccion_controles()
         self.seccion_bomba()
+        self.seccion_camara()
 
     def init_gpio(self):
         """Inicialización de pines GPIO para control de motor y de bomba"""
@@ -287,6 +292,18 @@ class MainFrame(tk.Frame):
                                     font=Style.TEXT_FONT)
         automatico.place(x=btns_x_pos+90, y=btns_y_pos+45)
 
+    def seccion_camara(self):
+        """Botón para activar o desactivar la cámara de la raspberry pi"""
+        camara_img = tk.PhotoImage(file="imgs/camara.gif")
+        camara_img_on = tk.PhotoImage(file="imgs/camara_on.gif")
+        self.camaras = it.cycle([camara_img_on, camara_img])
+        self.camara_methods = it.cycle([self.camara_on, self.camara_off])
+
+        self.camara_btn = tk.Button(self, image=camara_img,
+                                    command=self.camara)
+        self.camara_btn.image = camara_img_on
+        self.camara_btn.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
+
     def up(self):
         """Método para que el dron avance recto"""
         print('up')
@@ -352,6 +369,21 @@ class MainFrame(tk.Frame):
     def activar_automatico(self):
         """Método para activar el modo automático del dron"""
         print('función del automatico')
+
+    def camara(self):
+        self.camara_btn['image'] = next(self.camaras)
+        next(self.camara_methods)()
+
+    def camara_on(self):
+        print('camara encendida')
+        camera.rotation = 180
+        camera.start_preview()
+        camera.preview.fullscreen = False
+        camera.preview.window = (0, 0, 640, 480)
+
+    def camara_off(self):
+        print('camara apagada')
+        camera.stop_preview()
 
     def read_sensors(self):
         """Método para la lectura de sensores"""
