@@ -14,7 +14,7 @@ class MenuNotebook(ttk.Notebook):
 
         self.logo = tk.Label(self.parent, image=logo_img)
         self.logo.image = logo_img
-        self.logo.place(x=304, y=40)
+        self.logo.place(relx=0.5, y=30, anchor=tk.N)
 
     def almacenar_medicion(self, event):
         """

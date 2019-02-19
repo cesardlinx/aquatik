@@ -32,7 +32,7 @@ class Application(tk.Frame):
 
         self.notebook.add(main_tab, text="Monitoreo")
         self.notebook.add(mediciones_tab, text="Mediciones")
-        self.notebook.add(posiciones_tab, text="Posiciones")
+        self.notebook.add(posiciones_tab, text="Localizaciones")
 
         self.notebook.place(x=0, y=0)
 
@@ -40,7 +40,7 @@ class Application(tk.Frame):
         """Método para configurar la ventana"""
         self.parent.title("Aplicación para Monitoreo del Agua")
         self.window_width = 700
-        self.window_height = 600
+        self.window_height = 640
         self.parent.geometry('{}x{}'.format(self.window_width,
                                             self.window_height+22))
         self.parent.resizable(width=False, height=False)

@@ -36,8 +36,8 @@ class MainFrame(tk.Frame):
         self.latitud = tk.StringVar()
         self.longitud = tk.StringVar()
 
-        # parámetro del automático (0 o 1)
-        self.automatico = tk.IntVar()
+        self.velocidad = tk.StringVar()
+        self.nivel = tk.StringVar()
 
         # Secciones de la aplicación
         self.seccion_sensores()
@@ -82,7 +82,7 @@ class MainFrame(tk.Frame):
     def seccion_sensores(self):
         """Sección donde se muestra los parámetros del agua."""
         # Posicionamiento
-        sensores_y_pos = 80
+        sensores_y_pos = 70
         sensores_x_pos = 10
 
         # Header sección de sensores
@@ -154,7 +154,7 @@ class MainFrame(tk.Frame):
     def seccion_gps(self):
         """Sección donde se muestra la posición del dron acuático."""
         # Posicionamiento
-        gps_y_pos = 80
+        gps_y_pos = 70
         gps_x_pos = 370
 
         # Header sección de gps
@@ -206,21 +206,39 @@ class MainFrame(tk.Frame):
     def seccion_controles(self):
         """Sección donde se controla la dirección del dron"""
         # Posicionamiento
-        controles_y_pos = 290
         controles_x_pos = 370
+        controles_y_pos = 283
 
         # Header sección de controles
         controles_header = tk.Label(
             self, text="Control de Dirección",
             font=Style.HEADER_FONT)
-        controles_header.place(x=controles_x_pos+57.5, y=controles_y_pos)
+        controles_header.place(x=controles_x_pos+57.5, y=controles_y_pos-11)
 
         # Frame para sección de controles
         controles_frame = ttk.Frame(self,
                                     borderwidth=2, relief="raised",
                                     padding=(10, 10),
                                     width=320, height=320)
-        controles_frame.place(x=controles_x_pos, y=controles_y_pos+40)
+        controles_frame.place(x=controles_x_pos, y=controles_y_pos+100)
+
+        # Frame para mostrar la velocidad del dron
+        velocidad_frame = tk.Frame(self,
+                                   borderwidth=2, relief="sunken",
+                                   bg=Style.PRIMARY_COLOR)
+        velocidad_frame.place(
+            x=controles_x_pos, y=controles_y_pos+30, width=320, height=50)
+        # Velocidad del dron
+        velocidad_label = tk.Label(
+            velocidad_frame, text="Velocidad:",
+            font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR, fg=Style.WHITE)
+        velocidad_label.place(relx=0.4, rely=0.5, anchor=tk.CENTER)
+
+        velocidad_output = tk.Label(
+            velocidad_frame, textvariable=self.velocidad,
+            font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR,
+            fg=Style.DISPLAY_COLOR)
+        velocidad_output.place(relx=0.61, rely=0.5, anchor=tk.CENTER)
 
         # Botones
         up_img = tk.PhotoImage(file="imgs/up.gif")
@@ -254,7 +272,7 @@ class MainFrame(tk.Frame):
 
         # stop button and label
         stop_x = 0.88
-        stop_y = 0.63
+        stop_y = 0.65
 
         stop_label = tk.Label(self, text="Paro", font=Style.TEXT_FONT)
         stop_label.place(relx=stop_x, rely=stop_y, anchor=tk.CENTER)
@@ -262,30 +280,48 @@ class MainFrame(tk.Frame):
         button_stop = tk.Button(self, image=self.stop_img,
                                 command=self.stop)
         button_stop.image = self.stop_img
-        button_stop.place(relx=stop_x, rely=stop_y+0.06, anchor=tk.CENTER)
+        button_stop.place(x=controles_x_pos+225, y=controles_y_pos+160)
 
     def seccion_bomba(self):
         """Sección donde se controla la bomba de succión de agua"""
         # Posicionamiento
-        bomba_y_pos = 360
         bomba_x_pos = 10
+        bomba_y_pos = 375
 
         # Header sección de la bomba
         bomba_header = tk.Label(
-            self, text="Bomba",
+            self, text="Toma de muestras",
             font=Style.HEADER_FONT)
-        bomba_header.place(x=bomba_x_pos+124, y=bomba_y_pos)
+        bomba_header.place(x=bomba_x_pos+70, y=bomba_y_pos)
 
         # Frame para sección de bomba
         bomba_frame = tk.Frame(self,
                                borderwidth=2, relief="raised",
-                               width=320, height=90)
+                               width=320, height=110)
         bomba_frame.place(x=bomba_x_pos, y=bomba_y_pos+40)
 
         # Pösicionamiento de botones
 
         btns_x_pos = 8
-        btns_y_pos = 8
+        btns_y_pos = 67
+
+        # Frame para mostrar el nivel en el vaso
+        nivel_frame = tk.Frame(bomba_frame,
+                               borderwidth=2, relief="sunken",
+                               bg=Style.PRIMARY_COLOR)
+        nivel_frame.place(relx=0.5, rely=0.01, relwidth=0.999, relheight=0.5,
+                          anchor=tk.N)
+        # Nivel del vaso
+        nivel_label = tk.Label(
+            nivel_frame, text="Nivel:",
+            font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR, fg=Style.WHITE)
+        nivel_label.place(relx=0.4, rely=0.5, anchor=tk.CENTER)
+
+        nivel_output = tk.Label(
+            nivel_frame, textvariable=self.nivel,
+            font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR,
+            fg=Style.DISPLAY_COLOR)
+        nivel_output.place(relx=0.56, rely=0.5, anchor=tk.CENTER)
 
         # Botones para control de bomba
         bomba_on_btn = tk.Button(bomba_frame, text="Encender Bomba",
@@ -299,12 +335,6 @@ class MainFrame(tk.Frame):
 
         bomba_off_btn.place(x=btns_x_pos+165, y=btns_y_pos)
 
-        automatico = tk.Checkbutton(bomba_frame, text="Automático",
-                                    variable=self.automatico,
-                                    command=self.activar_automatico,
-                                    font=Style.TEXT_FONT)
-        automatico.place(x=btns_x_pos+90, y=btns_y_pos+45)
-
     def seccion_camara(self):
         """Botón para activar o desactivar la cámara de la raspberry pi"""
         camara_img = tk.PhotoImage(file="imgs/camara.gif")
@@ -314,7 +344,7 @@ class MainFrame(tk.Frame):
 
         # Positioning
         pos_x = 0.5
-        pos_y = 0.92
+        pos_y = 0.94
 
         self.camaras = it.cycle([camara_img_on, camara_img])
         self.record_imgs = it.cycle([self.stop_img, record_img])
@@ -388,10 +418,6 @@ class MainFrame(tk.Frame):
         """Método para apagar la bomba de succión"""
         print('bomba apagada')
         GPIO.output(self.motor_bomba, GPIO.LOW)
-
-    def activar_automatico(self):
-        """Método para activar el modo automático del dron"""
-        print('función del automatico')
 
     def camara(self):
         self.camara_btn['image'] = next(self.camaras)
@@ -496,15 +522,25 @@ class MainFrame(tk.Frame):
                             parametros[4] else 0
                         longitud = parametros[5] if numero_datos > 5 and \
                             parametros[5] else 0
+                        velocidad = parametros[6] if numero_datos > 6 and \
+                            parametros[6] else 0
+                        nivel = parametros[7] if numero_datos > 7 and \
+                            parametros[7] else 0
+
+                        # condición para apagado de bomba
+                        if float(nivel) > 25:
+                            self.apagar_bomba()
 
                         self.temperatura.set('{} °C'.format(temperatura))
-                        self.oxigeno.set('{} mg/l'.format(oxigeno))
+                        self.oxigeno.set('{} ppm'.format(oxigeno))
                         self.ph.set('{}'.format(ph))
-                        self.conductividad.set('{} mmho/cm'
+                        self.conductividad.set('{} uS/cm'
                                                .format(conductividad))
 
                         self.latitud.set('{}'.format(latitud))
                         self.longitud.set('{}'.format(longitud))
+                        self.velocidad.set('{} km/h'.format(velocidad))
+                        self.nivel.set('{} ml'.format(nivel))
 
                         self.serial_buffer = ""  # borrar buffer
                     else:
