@@ -1,4 +1,3 @@
-import time
 import serial
 import itertools as it
 import tkinter as tk
@@ -220,13 +219,14 @@ class MainFrame(tk.Frame):
                                     borderwidth=2, relief="raised",
                                     padding=(10, 10),
                                     width=320, height=320)
-        controles_frame.place(x=controles_x_pos+81, y=controles_y_pos+40)
+        controles_frame.place(x=controles_x_pos, y=controles_y_pos+40)
 
         # Botones
-        up_img = tk.PhotoImage(file="imgs/up.png")
-        down_img = tk.PhotoImage(file="imgs/down.png")
-        left_img = tk.PhotoImage(file="imgs/left.png")
-        right_img = tk.PhotoImage(file="imgs/right.png")
+        up_img = tk.PhotoImage(file="imgs/up.gif")
+        down_img = tk.PhotoImage(file="imgs/down.gif")
+        left_img = tk.PhotoImage(file="imgs/left.gif")
+        right_img = tk.PhotoImage(file="imgs/right.gif")
+        stop_img = tk.PhotoImage(file="imgs/stop.gif")
 
         button_up = tk.Button(controles_frame, image=up_img, command=self.up,
                               height=40, width=40)
@@ -250,6 +250,18 @@ class MainFrame(tk.Frame):
                                 height=40, width=40)
         button_down.image = down_img
         button_down.grid(column=1, row=2)
+
+        # stop button and label
+        stop_x = 0.88
+        stop_y = 0.63
+
+        stop_label = tk.Label(self, text="Paro", font=Style.TEXT_FONT)
+        stop_label.place(relx=stop_x, rely=stop_y, anchor=tk.CENTER)
+
+        button_stop = tk.Button(self, image=stop_img,
+                                command=self.stop)
+        button_stop.image = stop_img
+        button_stop.place(relx=stop_x, rely=stop_y+0.06, anchor=tk.CENTER)
 
     def seccion_bomba(self):
         """Sección donde se controla la bomba de succión de agua"""
@@ -311,11 +323,6 @@ class MainFrame(tk.Frame):
         GPIO.output(self.motor_A2, GPIO.LOW)
         GPIO.output(self.motor_B1, GPIO.LOW)
         GPIO.output(self.motor_B2, GPIO.HIGH)
-        time.sleep(1)
-        GPIO.output(self.motor_A1, GPIO.LOW)
-        GPIO.output(self.motor_A2, GPIO.LOW)
-        GPIO.output(self.motor_B1, GPIO.LOW)
-        GPIO.output(self.motor_B2, GPIO.LOW)
 
     def down(self):
         """Método para retroceder"""
@@ -323,11 +330,6 @@ class MainFrame(tk.Frame):
         GPIO.output(self.motor_A1, GPIO.LOW)
         GPIO.output(self.motor_A2, GPIO.HIGH)
         GPIO.output(self.motor_B1, GPIO.HIGH)
-        GPIO.output(self.motor_B2, GPIO.LOW)
-        time.sleep(1)
-        GPIO.output(self.motor_A1, GPIO.LOW)
-        GPIO.output(self.motor_A2, GPIO.LOW)
-        GPIO.output(self.motor_B1, GPIO.LOW)
         GPIO.output(self.motor_B2, GPIO.LOW)
 
     def left(self):
@@ -337,11 +339,6 @@ class MainFrame(tk.Frame):
         GPIO.output(self.motor_A2, GPIO.LOW)
         GPIO.output(self.motor_B1, GPIO.HIGH)
         GPIO.output(self.motor_B2, GPIO.LOW)
-        time.sleep(1)
-        GPIO.output(self.motor_A1, GPIO.LOW)
-        GPIO.output(self.motor_A2, GPIO.LOW)
-        GPIO.output(self.motor_B1, GPIO.LOW)
-        GPIO.output(self.motor_B2, GPIO.LOW)
 
     def right(self):
         """Método para que el dron gire a la derecha"""
@@ -350,7 +347,10 @@ class MainFrame(tk.Frame):
         GPIO.output(self.motor_A2, GPIO.HIGH)
         GPIO.output(self.motor_B1, GPIO.LOW)
         GPIO.output(self.motor_B2, GPIO.HIGH)
-        time.sleep(1)
+
+    def stop(self):
+        """Método para parar el dron"""
+        print('stop')
         GPIO.output(self.motor_A1, GPIO.LOW)
         GPIO.output(self.motor_A2, GPIO.LOW)
         GPIO.output(self.motor_B1, GPIO.LOW)
