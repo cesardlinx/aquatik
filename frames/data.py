@@ -84,6 +84,12 @@ class DataFrame(tk.Frame):
         self.show_data(datos)
         self.table.place(x=x_pos, y=y_pos)
 
+        # Botón de borrado de datos
+        delete_button = tk.Button(self, text='Borrar {}'.format(self.name),
+                                  font=Style.TEXT_FONT,
+                                  command=self.delete_data)
+        delete_button.place(x=x_pos+479, y=y_pos+350, width=158)
+
     def update_table(self):
         """Método para actualizar tabla de datos"""
         old_data = self.table.get_children()
@@ -106,3 +112,11 @@ class DataFrame(tk.Frame):
             datos = [(idx+1,) + dato[1:] for idx, dato in
                      enumerate(Posicion.all())]
         return datos
+
+    def delete_data(self):
+        """Método para borrar los datos"""
+        if self.name == 'mediciones':
+            Medicion.clear()
+        elif self.name == 'posiciones':
+            Posicion.clear()
+        self.update_table()

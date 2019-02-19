@@ -1,9 +1,13 @@
 from .database import Database
 from datetime import datetime
 from tkinter import messagebox
+from .model import Model
 
 
-class Medicion(object):
+class Medicion(Model):
+
+    table_name = 'mediciones'
+
     def __init__(self, *args, **kwargs):
         self.temperatura = kwargs['temperatura'].get().split()[0]
         self.oxigeno = kwargs['oxigeno'].get().split()[0]
@@ -25,12 +29,3 @@ class Medicion(object):
         messagebox.showinfo('Medición almacenada!',
                             'La medición ha sido almacenada exitosamente.')
 
-    @classmethod
-    def all(self):
-        """Obtención de TODAS las mediciones en la base de datos."""
-        db = Database.connect()
-        cursor = db.cursor()
-        cursor.execute('''SELECT * FROM mediciones''')
-        mediciones = cursor.fetchall()
-        db.close()
-        return mediciones

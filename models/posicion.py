@@ -1,9 +1,13 @@
 from .database import Database
 from datetime import datetime
 from tkinter import messagebox
+from .model import Model
 
 
-class Posicion(object):
+class Posicion(Model):
+
+    table_name = 'posiciones'
+
     def __init__(self, *args, **kwargs):
         self.latitud = kwargs['latitud']
         self.longitud = kwargs['longitud']
@@ -21,13 +25,3 @@ class Posicion(object):
         db.close()
         messagebox.showinfo('Posición almacenada!',
                             'La posición ha sido almacenada exitosamente.')
-
-    @classmethod
-    def all(self):
-        """Obtención de TODAS las posiciones en la base de datos."""
-        db = Database.connect()
-        cursor = db.cursor()
-        cursor.execute('''SELECT * FROM posiciones''')
-        posiciones = cursor.fetchall()
-        db.close()
-        return posiciones
