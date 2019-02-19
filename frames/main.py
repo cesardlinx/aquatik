@@ -444,10 +444,11 @@ class MainFrame(tk.Frame):
                         longitud = parametros[5] if numero_datos > 5 and \
                             parametros[5] else 0
 
-                        self.temperatura.set('{}'.format(temperatura))
-                        self.oxigeno.set('{}'.format(oxigeno))
+                        self.temperatura.set('{} °C'.format(temperatura))
+                        self.oxigeno.set('{} mg/l'.format(oxigeno))
                         self.ph.set('{}'.format(ph))
-                        self.conductividad.set('{}'.format(conductividad))
+                        self.conductividad.set('{} mmho/cm'
+                                               .format(conductividad))
 
                         self.latitud.set('{}'.format(latitud))
                         self.longitud.set('{}'.format(longitud))

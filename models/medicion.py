@@ -5,17 +5,17 @@ from tkinter import messagebox
 
 class Medicion(object):
     def __init__(self, *args, **kwargs):
-        self.temperatura = kwargs['temperatura']
-        self.oxigeno = kwargs['oxigeno']
-        self.ph = kwargs['ph']
-        self.conductividad = kwargs['conductividad']
+        self.temperatura = kwargs['temperatura'].get().split()[0]
+        self.oxigeno = kwargs['oxigeno'].get().split()[0]
+        self.ph = kwargs['ph'].get()
+        self.conductividad = kwargs['conductividad'].get().split()[0]
 
     def save(self):
         """Almacenado de mediciones"""
         db = Database.connect()
         cursor = db.cursor()
-        medidas = (self.temperatura.get(), self.oxigeno.get(), self.ph.get(),
-                   self.conductividad.get(), datetime.now())
+        medidas = (self.temperatura, self.oxigeno, self.ph,
+                   self.conductividad, datetime.now())
         cursor.execute('''INSERT INTO mediciones (
                 Temperatura, Oxigeno, pH, Conductividad,
                 Fecha) VALUES (?,?,?,?,?)
