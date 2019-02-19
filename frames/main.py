@@ -54,14 +54,16 @@ class MainFrame(tk.Frame):
         self.motor_A2 = 31
         self.motor_B1 = 33  # azul morado
         self.motor_B2 = 35
-        self.motor_bomba = 37
+        self.motor_bomba_1 = 21
+        self.motor_bomba_2 = 23
         self.Trig = 11
         self.Echo = 13
         GPIO.setup(self.motor_A1, GPIO.OUT)
         GPIO.setup(self.motor_B1, GPIO.OUT)
         GPIO.setup(self.motor_A2, GPIO.OUT)
         GPIO.setup(self.motor_B2, GPIO.OUT)
-        GPIO.setup(self.motor_bomba, GPIO.OUT)
+        GPIO.setup(self.motor_bomba_1, GPIO.OUT)
+        GPIO.setup(self.motor_bomba_2, GPIO.OUT)
         GPIO.setup(self.Trig, GPIO.OUT)
         GPIO.setup(self.Echo, GPIO.IN)
 
@@ -414,12 +416,12 @@ class MainFrame(tk.Frame):
     def encender_bomba(self):
         """Método para encender la bomba de succión"""
         print('bomba encendida')
-        GPIO.output(self.motor_bomba, GPIO.HIGH)
+        GPIO.output(self.motor_bomba_1, GPIO.HIGH)
 
     def apagar_bomba(self):
         """Método para apagar la bomba de succión"""
         print('bomba apagada')
-        GPIO.output(self.motor_bomba, GPIO.LOW)
+        GPIO.output(self.motor_bomba_1, GPIO.LOW)
 
     def camara(self):
         self.camara_btn['image'] = next(self.camaras)
