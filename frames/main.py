@@ -1,3 +1,4 @@
+import time
 import serial
 import itertools as it
 import tkinter as tk
@@ -226,7 +227,7 @@ class MainFrame(tk.Frame):
         down_img = tk.PhotoImage(file="imgs/down.gif")
         left_img = tk.PhotoImage(file="imgs/left.gif")
         right_img = tk.PhotoImage(file="imgs/right.gif")
-        stop_img = tk.PhotoImage(file="imgs/stop.gif")
+        self.stop_img = tk.PhotoImage(file="imgs/stop.gif")
 
         button_up = tk.Button(controles_frame, image=up_img, command=self.up,
                               height=40, width=40)
@@ -258,9 +259,9 @@ class MainFrame(tk.Frame):
         stop_label = tk.Label(self, text="Paro", font=Style.TEXT_FONT)
         stop_label.place(relx=stop_x, rely=stop_y, anchor=tk.CENTER)
 
-        button_stop = tk.Button(self, image=stop_img,
+        button_stop = tk.Button(self, image=self.stop_img,
                                 command=self.stop)
-        button_stop.image = stop_img
+        button_stop.image = self.stop_img
         button_stop.place(relx=stop_x, rely=stop_y+0.06, anchor=tk.CENTER)
 
     def seccion_bomba(self):
@@ -308,13 +309,35 @@ class MainFrame(tk.Frame):
         """Botón para activar o desactivar la cámara de la raspberry pi"""
         camara_img = tk.PhotoImage(file="imgs/camara.gif")
         camara_img_on = tk.PhotoImage(file="imgs/camara_on.gif")
+        picture_img = tk.PhotoImage(file="imgs/picture.gif")
+        record_img = tk.PhotoImage(file="imgs/record.gif")
+
+        # Positioning
+        pos_x = 0.5
+        pos_y = 0.92
+
         self.camaras = it.cycle([camara_img_on, camara_img])
+        self.record_imgs = it.cycle([self.stop_img, record_img])
         self.camara_methods = it.cycle([self.camara_on, self.camara_off])
+        self.record_methods = it.cycle([self.start_recording,
+                                        self.stop_recording])
 
         self.camara_btn = tk.Button(self, image=camara_img,
                                     command=self.camara)
         self.camara_btn.image = camara_img_on
-        self.camara_btn.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
+        self.camara_btn.place(relx=pos_x-0.1, rely=pos_y, anchor=tk.CENTER)
+
+        self.picture_btn = tk.Button(self, image=picture_img,
+                                     command=self.take_picture)
+        self.picture_btn.image = picture_img
+        self.picture_btn.place(relx=pos_x, rely=pos_y, anchor=tk.CENTER,
+                               width=56, height=56)
+
+        self.record_btn = tk.Button(self, image=record_img,
+                                    command=self.record)
+        self.record_btn.image = record_img
+        self.record_btn.place(relx=pos_x+0.1, rely=pos_y, anchor=tk.CENTER,
+                              width=56, height=56)
 
     def up(self):
         """Método para que el dron avance recto"""
@@ -384,6 +407,36 @@ class MainFrame(tk.Frame):
     def camara_off(self):
         print('camara apagada')
         camera.stop_preview()
+
+    def take_picture(self):
+        print('taking picture')
+        filename = time.strftime("%Y%m%d-%H%M%S")
+        camera.capture('/home/pi/Desktop/{}.jpg'.format(filename))
+
+    def record(self):
+        self.record_btn['image'] = next(self.record_imgs)
+        next(self.record_methods)()
+
+    def start_recording(self):
+        print('start recording')
+        self.update()
+        self.camara_btn.event_generate('<Enter>')
+        self.camara_btn.event_generate('<Button-1>')
+        self.camara_btn.event_generate('<ButtonRelease-1>')
+        self.record_btn.event_generate('<Leave>')
+        self.record_btn.event_generate('<Enter>')
+        filename = time.strftime("%Y%m%d-%H%M%S")
+        camera.start_recording('/home/pi/Desktop/{}.h264'.format(filename))
+
+    def stop_recording(self):
+        print('stop recording')
+        self.update()
+        self.camara_btn.event_generate('<Enter>')
+        self.camara_btn.event_generate('<Button-1>')
+        self.camara_btn.event_generate('<ButtonRelease-1>')
+        self.record_btn.event_generate('<Leave>')
+        self.record_btn.event_generate('<Enter>')
+        camera.stop_recording()
 
     def read_sensors(self):
         """Método para la lectura de sensores"""
