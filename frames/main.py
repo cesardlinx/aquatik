@@ -139,10 +139,9 @@ class MainFrame(tk.Frame):
         bomba_guardar_medicion = tk.Button(sensores_frame,
                                            text="Guardar medición",
                                            font=Style.TEXT_FONT)
-        bomba_guardar_medicion.bind('<Button-1>',
-                                    self.parent.almacenar_medicion_click)
-        bomba_guardar_medicion.bind('<Key>',
-                                    self.parent.almacenar_medicion_key)
+        bomba_guardar_medicion.event_add('<<click>>', '<Button-1>', '<Key>')
+        bomba_guardar_medicion.bind('<<click>>',
+                                    self.parent.almacenar_medicion)
         bomba_guardar_medicion.place(x=labels_x_pos+125, y=labels_x_pos+150)
 
         self.parent.after(10, self.read_sensors)
@@ -162,7 +161,7 @@ class MainFrame(tk.Frame):
         # Frame para sección de gps
         gps_frame = tk.Frame(self,
                              borderwidth=2, relief="sunken",
-                             width=320, height=90,
+                             width=320, height=150,
                              bg=Style.PRIMARY_COLOR)
         gps_frame.place(x=gps_x_pos, y=gps_y_pos+40)
 
@@ -179,6 +178,14 @@ class MainFrame(tk.Frame):
             font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR, fg=Style.WHITE)
         longitud_label.place(x=labels_x_pos, y=labels_y_pos+40)
 
+        boton_guardar_posicion = tk.Button(gps_frame,
+                                           text="Guardar posición",
+                                           font=Style.TEXT_FONT)
+        boton_guardar_posicion.event_add('<<click>>', '<Button-1>', '<Key>')
+        boton_guardar_posicion.bind('<<click>>',
+                                    self.parent.almacenar_posicion)
+        boton_guardar_posicion.place(relx=0.45, rely=0.6)
+
         # Valores del sensor
         self.latitud_output = tk.Label(
             gps_frame, textvariable=self.latitud,
@@ -194,7 +201,7 @@ class MainFrame(tk.Frame):
     def seccion_controles(self):
         """Sección donde se controla la dirección del dron"""
         # Posicionamiento
-        controles_y_pos = 260
+        controles_y_pos = 290
         controles_x_pos = 370
 
         # Header sección de controles

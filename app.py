@@ -21,11 +21,18 @@ class Application(tk.Frame):
 
         main_tab = MainFrame(self.notebook, width=self.window_width,
                              height=self.window_height)
-        data_tab = DataFrame(self.notebook, width=self.window_width,
-                             height=self.window_height)
+        mediciones_tab = DataFrame(self.notebook,
+                                   name='mediciones',
+                                   width=self.window_width,
+                                   height=self.window_height)
+        posiciones_tab = DataFrame(self.notebook,
+                                   name='posiciones',
+                                   width=self.window_width,
+                                   height=self.window_height)
 
         self.notebook.add(main_tab, text="Monitoreo")
-        self.notebook.add(data_tab, text="Datos")
+        self.notebook.add(mediciones_tab, text="Mediciones")
+        self.notebook.add(posiciones_tab, text="Posiciones")
 
         self.notebook.place(x=0, y=0)
 
@@ -33,7 +40,7 @@ class Application(tk.Frame):
         """Método para configurar la ventana"""
         self.parent.title("Aplicación para Monitoreo del Agua")
         self.window_width = 700
-        self.window_height = 500
+        self.window_height = 600
         self.parent.geometry('{}x{}'.format(self.window_width,
                                             self.window_height+22))
         self.parent.resizable(width=False, height=False)

@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from models.medicion import Medicion
+from models.posicion import Posicion
 
 
 class MenuNotebook(ttk.Notebook):
@@ -15,19 +16,7 @@ class MenuNotebook(ttk.Notebook):
         self.logo.image = logo_img
         self.logo.place(x=304, y=40)
 
-    def almacenar_medicion_click(self, event):
-        """Método llamado al hacer click sobre el botón almacenar medición"""
-        self.almacenar_medición()
-
-    def almacenar_medicion_key(self, event):
-        """
-        Método llamado al accionar el botón almacenar medición mediante la
-        tecla de espacio
-        """
-        if event.keysym == 'space':
-            self.almacenar_medición()
-
-    def almacenar_medición(self):
+    def almacenar_medicion(self, event):
         """
         Método que almacena el dato y llama al método para actualizar
         tabla de mediciones.
@@ -43,4 +32,20 @@ class MenuNotebook(ttk.Notebook):
         medicion.save()
 
         data_tab = self.winfo_children()[1]
+        data_tab.update_table()
+
+    def almacenar_posicion(self, event):
+        """
+        Método que almacena el dato y llama al método para actualizar
+        tabla de mediciones.
+        """
+        main_tab = self.winfo_children()[0]
+
+        posicion = Posicion(
+            latitud=main_tab.latitud,
+            longitud=main_tab.longitud,
+        )
+        posicion.save()
+
+        data_tab = self.winfo_children()[2]
         data_tab.update_table()

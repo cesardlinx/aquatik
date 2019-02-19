@@ -29,9 +29,18 @@ class Database(object):
             Fecha DATETIME DEFAULT CURRENT_TIMESTAMP
         );
         """
+        create_posiciones_table = """
+        CREATE TABLE IF NOT EXISTS posiciones (
+            IdPosicion INTEGER PRIMARY KEY,
+            Latitud FLOAT(4,2) NOT NULL,
+            Longitud FLOAT(4,2) NOT NULL,
+            Fecha DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        """
 
         db = cls.connect()
         cursor = db.cursor()
         cursor.execute(create_mediciones_table)
+        cursor.execute(create_posiciones_table)
         db.commit()
         db.close()
