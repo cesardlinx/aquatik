@@ -1,12 +1,14 @@
-import time
-import serial
 import itertools as it
+import time
 import tkinter as tk
-from tkinter import ttk
+import webbrowser
 import RPi.GPIO as GPIO
-from tkinter import messagebox
-from styles.main_styles import Style
+from tkinter import messagebox, ttk
+
+import serial
 from serial.serialutil import SerialException
+
+from styles.main_styles import Style
 
 from picamera import PiCamera
 camera = PiCamera()
@@ -185,13 +187,23 @@ class MainFrame(tk.Frame):
             font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR, fg=Style.WHITE)
         longitud_label.place(x=labels_x_pos, y=labels_y_pos+40)
 
+        btn_pos = 0.65
+
+        # Botón para guardar posición
         boton_guardar_posicion = tk.Button(gps_frame,
                                            text="Guardar posición",
                                            font=Style.TEXT_FONT)
         boton_guardar_posicion.event_add('<<click>>', '<Button-1>', '<Key>')
         boton_guardar_posicion.bind('<<click>>',
                                     self.parent.almacenar_posicion)
-        boton_guardar_posicion.place(relx=0.45, rely=0.6)
+        boton_guardar_posicion.place(relx=0.47, rely=btn_pos)
+
+        # Botón para ver posición en navegador
+        boton_abrir_navegador = tk.Button(gps_frame,
+                                          text="Ver posición",
+                                          font=Style.TEXT_FONT,
+                                          command=self.open_location)
+        boton_abrir_navegador.place(relx=0.05, rely=btn_pos)
 
         # Valores del sensor
         self.latitud_output = tk.Label(
@@ -467,6 +479,18 @@ class MainFrame(tk.Frame):
         self.record_btn.event_generate('<Leave>')
         self.record_btn.event_generate('<Enter>')
         camera.stop_recording()
+
+    def open_location(self):
+        """Visualización de la posición en goggle maps mediante un navegador"""
+        not_allowed = ('', 'N/A')
+        if self.latitud.get() not in not_allowed and self.longitud.get()\
+           not in not_allowed:
+            url = 'https://www.google.com/maps/place/{},{}'\
+                .format(self.latitud.get(), self.longitud.get())
+            webbrowser.get('chromium-browser').open_new(url)
+        else:
+            messagebox.showinfo('GPS no listo', 'Los valores del GPS '
+                                'aún no están listos.')
 
     def read_sensors(self):
         """Método para la lectura de sensores"""
