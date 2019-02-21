@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .database import Database
 from datetime import datetime
 from tkinter import messagebox

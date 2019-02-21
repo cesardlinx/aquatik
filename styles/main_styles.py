@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Style:
     """Colores y Estilos generales para la aplicación"""
     TEXT_FONT = ('Helvetica', 12)

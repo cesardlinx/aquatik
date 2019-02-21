@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .database import Database
 from datetime import datetime
 from tkinter import messagebox
@@ -28,4 +29,3 @@ class Medicion(Model):
         db.close()
         messagebox.showinfo('Medición almacenada!',
                             'La medición ha sido almacenada exitosamente.')
-

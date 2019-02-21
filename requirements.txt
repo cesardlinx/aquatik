@@ -1,0 +1,4 @@
+gps3==0.33.3
+pyserial==3.4
+RPi.GPIO==0.6.5
+picamera==1.13
