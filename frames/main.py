@@ -26,7 +26,6 @@ class MainFrame(tk.Frame):
         self.parent = parent
 
         self.serial_conn = False
-        self.init_serial()
         self.init_gpio()
 
         # Valores de los sensores
@@ -77,9 +76,15 @@ class MainFrame(tk.Frame):
             self.serial_buffer = ""
         except SerialException:
             self.serial_conn = False
-            messagebox.showwarning('Desconexión!',
-                                   'No se ha establecido una conexión con los '
-                                   'sensores.')
+            retry = messagebox.askretrycancel(
+                'Desconexión!', 'No se ha establecido una conexión con los '
+                'sensores.'
+            )
+            if retry:
+                self.init_serial()
+            else:
+                self.parent.quit()
+
         else:
             self.serial_conn = True
 
@@ -575,9 +580,8 @@ class MainFrame(tk.Frame):
                         self.serial_buffer += str(char)  # añadir al buffer
             except SerialException:
                 self.serial_conn = False
-                messagebox.showwarning('Desconexión!',
-                                       'No se ha establecido una conexión '
-                                       'con los sensores.')
+                self.ser.close()
+                self.init_serial()
 
         # volver a ejecutar función
         self.parent.after(10, self.read_sensors)
