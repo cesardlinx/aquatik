@@ -34,7 +34,7 @@ class MenuNotebook(ttk.Notebook):
         data_tab = self.winfo_children()[1]
         data_tab.update_table()
 
-    def almacenar_posicion(self, event):
+    def almacenar_posicion(self):
         """
         Método que almacena el dato y llama al método para actualizar
         tabla de mediciones.

@@ -1,5 +1,6 @@
 #!./venv/bin/python
 # -*- coding: utf-8 -*-
+import os
 import tkinter as tk
 from frames.main import MainFrame
 from frames.data import DataFrame
@@ -13,7 +14,9 @@ class Application(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
+        self.init_gpsd()
         self.init_window()
+        self.parent.protocol("WM_DELETE_WINDOW", self.destroy_gpsd)
         self.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
         # Notebook pages (tabs)
@@ -45,6 +48,14 @@ class Application(tk.Frame):
                                             self.window_height+22))
         self.parent.resizable(width=False, height=False)
         self.parent.config(background=Style.BACKGROUND_COLOR)
+
+    def init_gpsd(self):
+        os.system('sudo killall gpsd')
+        os.system('sudo gpsd /dev/ttyAMA0 -F /var/run/gpsd.sock')
+
+    def destroy_gpsd(self):
+        os.system('sudo killall gpsd')
+        self.parent.quit()
 
 
 if __name__ == '__main__':

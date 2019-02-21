@@ -4,6 +4,7 @@ import tkinter as tk
 import webbrowser
 import RPi.GPIO as GPIO
 from tkinter import messagebox, ttk
+from gps3.agps3threaded import AGPS3mechanism
 
 import serial
 from serial.serialutil import SerialException
@@ -27,6 +28,11 @@ class MainFrame(tk.Frame):
 
         self.serial_conn = False
         self.init_gpio()
+
+        # agps thread
+        self.agps_thread = AGPS3mechanism()
+        self.agps_thread.stream_data()
+        self.agps_thread.run_thread()
 
         # Valores de los sensores
         self.temperatura = tk.StringVar()
@@ -195,13 +201,14 @@ class MainFrame(tk.Frame):
         btn_pos = 0.65
 
         # Botón para guardar posición
-        boton_guardar_posicion = tk.Button(gps_frame,
-                                           text="Guardar posición",
-                                           font=Style.TEXT_FONT)
-        boton_guardar_posicion.event_add('<<click>>', '<Button-1>', '<Key>')
-        boton_guardar_posicion.bind('<<click>>',
-                                    self.parent.almacenar_posicion)
-        boton_guardar_posicion.place(relx=0.47, rely=btn_pos)
+        self.boton_guardar_posicion = tk.Button(
+            gps_frame,
+            text="Guardar posición",
+            font=Style.TEXT_FONT,
+            command=self.check_gps_data
+        )
+
+        self.boton_guardar_posicion.place(relx=0.47, rely=btn_pos)
 
         # Botón para ver posición en navegador
         boton_abrir_navegador = tk.Button(gps_frame,
@@ -221,6 +228,15 @@ class MainFrame(tk.Frame):
             font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR,
             fg=Style.DISPLAY_COLOR)
         self.longitud_output.place(x=labels_x_pos+80, y=labels_y_pos+40)
+
+    def check_gps_data(self):
+        not_allowed = ('', 'n/a')
+        if self.latitud.get() not in not_allowed \
+           and self.longitud.get() not in not_allowed:
+            self.parent.almacenar_posicion()
+        else:
+            messagebox.showinfo('GPS no listo', 'Los valores del GPS '
+                                'aún no están listos.')
 
     def seccion_controles(self):
         """Sección donde se controla la dirección del dron"""
@@ -487,7 +503,7 @@ class MainFrame(tk.Frame):
 
     def open_location(self):
         """Visualización de la posición en goggle maps mediante un navegador"""
-        not_allowed = ('', 'N/A')
+        not_allowed = ('', 'n/a')
         if self.latitud.get() not in not_allowed and self.longitud.get()\
            not in not_allowed:
             url = 'https://www.google.com/maps/place/{},{}'\
@@ -496,6 +512,15 @@ class MainFrame(tk.Frame):
         else:
             messagebox.showinfo('GPS no listo', 'Los valores del GPS '
                                 'aún no están listos.')
+
+    def read_gps(self):
+        latitud = self.agps_thread.data_stream.lat
+        longitud = self.agps_thread.data_stream.lon
+        velocidad = self.agps_thread.data_stream.speed
+
+        self.latitud.set('{}'.format(latitud))
+        self.longitud.set('{}'.format(longitud))
+        self.velocidad.set('{} km/h'.format(velocidad))
 
     def read_sensors(self):
         """Método para la lectura de sensores"""
@@ -551,14 +576,8 @@ class MainFrame(tk.Frame):
                             parametros[2] else 0
                         conductividad = parametros[3] if numero_datos > 3 and\
                             parametros[3] else 0
-                        latitud = parametros[4] if numero_datos > 4 and \
+                        nivel = parametros[4] if numero_datos > 4 and \
                             parametros[4] else 0
-                        longitud = parametros[5] if numero_datos > 5 and \
-                            parametros[5] else 0
-                        velocidad = parametros[6] if numero_datos > 6 and \
-                            parametros[6] else 0
-                        nivel = parametros[7] if numero_datos > 7 and \
-                            parametros[7] else 0
 
                         # condición para apagado de bomba
                         if float(nivel) > 25:
@@ -569,11 +588,9 @@ class MainFrame(tk.Frame):
                         self.ph.set('{}'.format(ph))
                         self.conductividad.set('{} uS/cm'
                                                .format(conductividad))
-
-                        self.latitud.set('{}'.format(latitud))
-                        self.longitud.set('{}'.format(longitud))
-                        self.velocidad.set('{} km/h'.format(velocidad))
                         self.nivel.set('{} ml'.format(nivel))
+
+                        self.read_gps()
 
                         self.serial_buffer = ""  # borrar buffer
                     else:
