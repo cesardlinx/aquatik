@@ -3,7 +3,6 @@ import itertools as it
 import time
 import tkinter as tk
 import webbrowser
-import RPi.GPIO as GPIO
 from tkinter import messagebox, ttk
 from gps3.agps3threaded import AGPS3mechanism
 
@@ -11,6 +10,8 @@ import serial
 from serial.serialutil import SerialException
 
 from styles.main_styles import Style
+
+from classes.drone import Drone
 
 from picamera import PiCamera
 camera = PiCamera()
@@ -28,7 +29,7 @@ class MainFrame(tk.Frame):
         self.parent = parent
 
         self.serial_conn = False
-        self.init_gpio()
+        self.drone = Drone()
 
         # agps thread
         self.agps_thread = AGPS3mechanism()
@@ -46,6 +47,9 @@ class MainFrame(tk.Frame):
 
         self.velocidad = tk.StringVar()
         self.nivel = tk.StringVar()
+        self.bomba = tk.StringVar()
+
+        self.bomba = 'Encendida' if self.drone.bomba else 'Apagada'
 
         # Secciones de la aplicación
         self.seccion_sensores()
@@ -53,27 +57,6 @@ class MainFrame(tk.Frame):
         self.seccion_controles()
         self.seccion_bomba()
         self.seccion_camara()
-
-    def init_gpio(self):
-        """Inicialización de pines GPIO para control de motor y de bomba"""
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BOARD)
-        self.motor_A1 = 29  # color tomate y verde
-        self.motor_A2 = 31
-        self.motor_B1 = 33  # azul morado
-        self.motor_B2 = 35
-        self.motor_bomba_1 = 21
-        self.motor_bomba_2 = 23
-        self.Trig = 11
-        self.Echo = 13
-        GPIO.setup(self.motor_A1, GPIO.OUT)
-        GPIO.setup(self.motor_B1, GPIO.OUT)
-        GPIO.setup(self.motor_A2, GPIO.OUT)
-        GPIO.setup(self.motor_B2, GPIO.OUT)
-        GPIO.setup(self.motor_bomba_1, GPIO.OUT)
-        GPIO.setup(self.motor_bomba_2, GPIO.OUT)
-        GPIO.setup(self.Trig, GPIO.OUT)
-        GPIO.setup(self.Echo, GPIO.IN)
 
     def init_serial(self):
         try:
@@ -284,25 +267,26 @@ class MainFrame(tk.Frame):
         stop_img = tk.PhotoImage(file="imgs/stop.gif")
         self.stop_rec_img = tk.PhotoImage(file="imgs/stop_rec.gif")
 
-        button_up = tk.Button(controles_frame, image=up_img, command=self.up,
+        button_up = tk.Button(controles_frame, image=up_img,
+                              command=self.drone.up,
                               height=40, width=40)
         button_up.image = up_img
         button_up.grid(column=1, row=0)
 
         button_left = tk.Button(controles_frame, image=left_img,
-                                command=self.left,
+                                command=self.drone.left,
                                 height=40, width=40)
         button_left.image = left_img
         button_left.grid(column=0, row=1)
 
         button_right = tk.Button(controles_frame, image=right_img,
-                                 command=self.right,
+                                 command=self.drone.right,
                                  height=40, width=40)
         button_right.image = right_img
         button_right.grid(column=2, row=1)
 
         button_down = tk.Button(controles_frame, image=down_img,
-                                command=self.down,
+                                command=self.drone.down,
                                 height=40, width=40)
         button_down.image = down_img
         button_down.grid(column=1, row=2)
@@ -315,7 +299,7 @@ class MainFrame(tk.Frame):
         stop_label.place(relx=stop_x, rely=stop_y, anchor=tk.CENTER)
 
         button_stop = tk.Button(self, image=stop_img,
-                                command=self.stop)
+                                command=self.drone.stop)
         button_stop.image = stop_img
         button_stop.place(x=controles_x_pos+225, y=controles_y_pos+160)
 
@@ -362,12 +346,12 @@ class MainFrame(tk.Frame):
 
         # Botones para control de bomba
         bomba_on_btn = tk.Button(bomba_frame, text="Encender Bomba",
-                                 command=self.encender_bomba,
+                                 command=self.drone.encender_bomba,
                                  font=Style.TEXT_FONT)
         bomba_on_btn.place(x=btns_x_pos, y=btns_y_pos)
 
         bomba_off_btn = tk.Button(bomba_frame, text="Apagar Bomba",
-                                  command=self.apagar_bomba,
+                                  command=self.drone.apagar_bomba,
                                   font=Style.TEXT_FONT)
 
         bomba_off_btn.place(x=btns_x_pos+165, y=btns_y_pos)
@@ -406,56 +390,6 @@ class MainFrame(tk.Frame):
         self.record_btn.image = record_img
         self.record_btn.place(relx=pos_x+0.1, rely=pos_y, anchor=tk.CENTER,
                               width=56, height=56)
-
-    def up(self):
-        """Método para que el dron avance recto"""
-        print('up')
-        GPIO.output(self.motor_A1, GPIO.HIGH)
-        GPIO.output(self.motor_A2, GPIO.LOW)
-        GPIO.output(self.motor_B1, GPIO.LOW)
-        GPIO.output(self.motor_B2, GPIO.HIGH)
-
-    def down(self):
-        """Método para retroceder"""
-        print('down')
-        GPIO.output(self.motor_A1, GPIO.LOW)
-        GPIO.output(self.motor_A2, GPIO.HIGH)
-        GPIO.output(self.motor_B1, GPIO.HIGH)
-        GPIO.output(self.motor_B2, GPIO.LOW)
-
-    def left(self):
-        """Método para que el dron gire a la izquierda"""
-        print('left')
-        GPIO.output(self.motor_A1, GPIO.HIGH)
-        GPIO.output(self.motor_A2, GPIO.LOW)
-        GPIO.output(self.motor_B1, GPIO.HIGH)
-        GPIO.output(self.motor_B2, GPIO.LOW)
-
-    def right(self):
-        """Método para que el dron gire a la derecha"""
-        print('right')
-        GPIO.output(self.motor_A1, GPIO.LOW)
-        GPIO.output(self.motor_A2, GPIO.HIGH)
-        GPIO.output(self.motor_B1, GPIO.LOW)
-        GPIO.output(self.motor_B2, GPIO.HIGH)
-
-    def stop(self):
-        """Método para parar el dron"""
-        print('stop')
-        GPIO.output(self.motor_A1, GPIO.LOW)
-        GPIO.output(self.motor_A2, GPIO.LOW)
-        GPIO.output(self.motor_B1, GPIO.LOW)
-        GPIO.output(self.motor_B2, GPIO.LOW)
-
-    def encender_bomba(self):
-        """Método para encender la bomba de succión"""
-        print('bomba encendida')
-        GPIO.output(self.motor_bomba_1, GPIO.HIGH)
-
-    def apagar_bomba(self):
-        """Método para apagar la bomba de succión"""
-        print('bomba apagada')
-        GPIO.output(self.motor_bomba_1, GPIO.LOW)
 
     def camara(self):
         self.camara_btn['image'] = next(self.camaras)
@@ -580,9 +514,11 @@ class MainFrame(tk.Frame):
                         nivel = parametros[4] if numero_datos > 4 and \
                             parametros[4] else 0
 
-                        # condición para apagado de bomba
-                        if float(nivel) > 25:
-                            self.apagar_bomba()
+                        if float(nivel) > 25 and self.drone.bomba:
+                            self.drone.apagar_bomba()
+
+                        self.bomba = 'Encendida' if self.drone.bomba \
+                                     else 'Apagada'
 
                         self.temperatura.set('{} °C'.format(temperatura))
                         self.oxigeno.set('{} ppm'.format(oxigeno))
@@ -602,4 +538,4 @@ class MainFrame(tk.Frame):
                 self.init_serial()
 
         # volver a ejecutar función
-        self.parent.after(10, self.read_sensors)
+        self.parent.after(500, self.read_sensors)

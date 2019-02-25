@@ -6,9 +6,8 @@ import os
 working_path = os.getcwd()
 
 
-def main():
+def main(path):
     """Main function"""
-    path = 'frames/main.py'
     try:
         on_off = sys.argv[1]
     except IndexError:
@@ -55,4 +54,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    paths = ['frames/main.py', 'classes/drone.py']
+    for path in paths:
+        main(path)
