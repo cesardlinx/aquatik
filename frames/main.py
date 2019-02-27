@@ -70,11 +70,27 @@ class MainFrame(tk.Frame):
 
     def init_serial(self):
         try:
+            self.progress_dialog = tk.Toplevel()
+            self.progress_dialog.title('Realizando conexión')
+            self.progress_dialog.transient(self)
+
+            info_message = 'Conectando...'
+            message_label = tk.Label(
+                self.progress_dialog, text=info_message,
+                font=Style.POPUP_FONT)
+            message_label.pack(padx=10, pady=5)
+
+            progressbar = ttk.Progressbar(
+                self.progress_dialog, mode="indeterminate", length=300)
+            progressbar.pack(padx=5, pady=5)
+            progressbar.start(8)
+
             # Serial Buffer
             self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0,
                                      writeTimeout=0)  # asegura el no bloqueo
             self.serial_buffer = ""
         except SerialException:
+            self.progress_dialog.destroy()
             self.serial_conn = False
             retry = messagebox.askretrycancel(
                 'Desconexión!', 'No se ha establecido una conexión con los '
@@ -502,8 +518,7 @@ class MainFrame(tk.Frame):
             self.bomba_output.config(fg=Style.OFF_COLOR)
 
             # Popup window
-            SampleDialog(self, title="Muestra recogida!")
-
+            SampleDialog(self, title="Muestra")
 
     def read_sensors(self):
         """Método para la lectura de sensores"""
@@ -568,7 +583,7 @@ class MainFrame(tk.Frame):
                         else:
                             self.bomba.set('Apagada')
 
-                        self.bomba = 'Encendida' if self.drone.bomba \
+                        self.progress_dialog.destroy()
 
                         self.temperatura.set('{} °C'.format(temperatura))
                         self.oxigeno.set('{} ppm'.format(oxigeno))
