@@ -496,9 +496,16 @@ class MainFrame(tk.Frame):
                                 'aún no están listos.')
 
     def read_gps(self):
-        latitud = self.agps_thread.data_stream.lat
-        longitud = self.agps_thread.data_stream.lon
-        velocidad = self.agps_thread.data_stream.speed
+        latitud_raw = self.agps_thread.data_stream.lat
+        longitud_raw = self.agps_thread.data_stream.lon
+
+        if self.drone.is_moving:
+            velocidad = self.agps_thread.data_stream.speed
+        else:
+            velocidad = 0
+
+        latitud = round(Decimal(latitud_raw), 4)
+        longitud = round(Decimal(longitud_raw), 4)
 
         self.latitud.set('{}'.format(latitud))
         self.longitud.set('{}'.format(longitud))

@@ -44,8 +44,8 @@ class Application(tk.Frame):
         self.parent.title("Aplicación para Monitoreo del Agua")
         self.window_width = 700
         self.window_height = 640
-        self.parent.geometry('{}x{}'.format(self.window_width,
-                                            self.window_height+22))
+        self.parent.geometry('{}x{}+300+0'.format(self.window_width,
+                                                  self.window_height+22))
         self.parent.resizable(width=False, height=False)
         self.parent.config(background=Style.BACKGROUND_COLOR)
 

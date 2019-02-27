@@ -75,6 +75,13 @@ class Drone:
             self.bomba = 'off'
 
         @property
+        def is_moving(self):
+            if GPIO.input(self.motor_A1) or GPIO.input(self.motor_A2) or \
+                    GPIO.input(self.motor_B1) or GPIO.input(self.motor_B2):
+                return True
+            return False
+
+        @property
         def bomba(self):
             if GPIO.input(self.motor_bomba_1):
                 return True
