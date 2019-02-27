@@ -2,6 +2,7 @@
 class Style:
     """Colores y Estilos generales para la aplicación"""
     TEXT_FONT = ('Helvetica', 12)
+    POPUP_FONT = ('Helvetica', 12, 'bold')
     HEADER_FONT = ('Helvetica', 16)
     WHITE = "#fff"
     BLACK = "#000"

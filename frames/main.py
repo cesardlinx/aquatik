@@ -13,6 +13,7 @@ from serial.serialutil import SerialException
 from styles.main_styles import Style
 
 from classes.drone import Drone
+from dialogs.sample_dialog import SampleDialog
 
 from picamera import PiCamera
 camera = PiCamera()
@@ -499,6 +500,10 @@ class MainFrame(tk.Frame):
             self.drone.apagar_bomba()
             self.bomba.set('Apagada')
             self.bomba_output.config(fg=Style.OFF_COLOR)
+
+            # Popup window
+            SampleDialog(self, title="Muestra recogida!")
+
 
     def read_sensors(self):
         """Método para la lectura de sensores"""
