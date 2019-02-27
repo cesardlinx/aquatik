@@ -11,7 +11,7 @@ class MenuNotebook(ttk.Notebook):
         ttk.Notebook.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         # Logo
-        logo_img = tk.PhotoImage(file="imgs/logo.gif")
+        logo_img = tk.PhotoImage(file="imgs/logo.gif", master=self.parent)
 
         self.logo = tk.Label(self.parent, image=logo_img)
         self.logo.image = logo_img

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import itertools as it
 import time
+from decimal import Decimal
 import tkinter as tk
 import webbrowser
 from tkinter import messagebox, ttk
@@ -24,6 +25,7 @@ class MainFrame(tk.Frame):
     latitud y longitud), controles (para el control direccional del dron
     acuático) y bomba (donde se controla la bomba de succión de agua)
     """
+
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -49,7 +51,14 @@ class MainFrame(tk.Frame):
         self.nivel = tk.StringVar()
         self.bomba = tk.StringVar()
 
-        self.bomba = 'Encendida' if self.drone.bomba else 'Apagada'
+        self.nivel.set('0 ml')
+        self.nivel_totalizado = 0.0
+        self.time_start_pump = 0.0
+
+        if self.drone.bomba:
+            self.bomba.set('Encendida')
+        else:
+            self.bomba.set('Apagada')
 
         # Secciones de la aplicación
         self.seccion_sensores()
@@ -226,7 +235,7 @@ class MainFrame(tk.Frame):
         """Sección donde se controla la dirección del dron"""
         # Posicionamiento
         controles_x_pos = 370
-        controles_y_pos = 283
+        controles_y_pos = 293
 
         # Header sección de controles
         controles_header = tk.Label(
@@ -251,13 +260,13 @@ class MainFrame(tk.Frame):
         velocidad_label = tk.Label(
             velocidad_frame, text="Velocidad:",
             font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR, fg=Style.WHITE)
-        velocidad_label.place(relx=0.4, rely=0.5, anchor=tk.CENTER)
+        velocidad_label.place(relx=0.35, rely=0.5, anchor=tk.CENTER)
 
         velocidad_output = tk.Label(
             velocidad_frame, textvariable=self.velocidad,
             font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR,
             fg=Style.DISPLAY_COLOR)
-        velocidad_output.place(relx=0.61, rely=0.5, anchor=tk.CENTER)
+        velocidad_output.place(relx=0.63, rely=0.5, anchor=tk.CENTER)
 
         # Botones
         up_img = tk.PhotoImage(file="imgs/up.gif")
@@ -296,7 +305,7 @@ class MainFrame(tk.Frame):
         stop_y = 0.65
 
         stop_label = tk.Label(self, text="Paro", font=Style.TEXT_FONT)
-        stop_label.place(relx=stop_x, rely=stop_y, anchor=tk.CENTER)
+        stop_label.place(relx=stop_x, rely=stop_y+0.03, anchor=tk.CENTER)
 
         button_stop = tk.Button(self, image=stop_img,
                                 command=self.drone.stop)
@@ -318,40 +327,52 @@ class MainFrame(tk.Frame):
         # Frame para sección de bomba
         bomba_frame = tk.Frame(self,
                                borderwidth=2, relief="raised",
-                               width=320, height=110)
+                               width=320, height=140)
         bomba_frame.place(x=bomba_x_pos, y=bomba_y_pos+40)
 
         # Pösicionamiento de botones
 
         btns_x_pos = 8
-        btns_y_pos = 67
+        btns_y_pos = 90
 
         # Frame para mostrar el nivel en el vaso
         nivel_frame = tk.Frame(bomba_frame,
                                borderwidth=2, relief="sunken",
                                bg=Style.PRIMARY_COLOR)
-        nivel_frame.place(relx=0.5, rely=0.01, relwidth=0.999, relheight=0.5,
+        nivel_frame.place(relx=0.5, rely=0.01, relwidth=0.999, relheight=0.6,
                           anchor=tk.N)
         # Nivel del vaso
         nivel_label = tk.Label(
             nivel_frame, text="Nivel:",
             font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR, fg=Style.WHITE)
-        nivel_label.place(relx=0.4, rely=0.5, anchor=tk.CENTER)
+        nivel_label.place(relx=0.25, rely=0.3, anchor=tk.W)
 
         nivel_output = tk.Label(
             nivel_frame, textvariable=self.nivel,
             font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR,
             fg=Style.DISPLAY_COLOR)
-        nivel_output.place(relx=0.56, rely=0.5, anchor=tk.CENTER)
+        nivel_output.place(relx=0.75, rely=0.3, anchor=tk.E)
+
+        # Nivel del vaso
+        bomba_label = tk.Label(
+            bomba_frame, text="Bomba:",
+            font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR, fg=Style.WHITE)
+        bomba_label.place(relx=0.25, rely=0.4, anchor=tk.W)
+
+        self.bomba_output = tk.Label(
+            bomba_frame, textvariable=self.bomba,
+            font=Style.TEXT_FONT, bg=Style.PRIMARY_COLOR,
+            fg=Style.OFF_COLOR)
+        self.bomba_output.place(relx=0.75, rely=0.4, anchor=tk.E)
 
         # Botones para control de bomba
         bomba_on_btn = tk.Button(bomba_frame, text="Encender Bomba",
-                                 command=self.drone.encender_bomba,
+                                 command=self.pump_on,
                                  font=Style.TEXT_FONT)
         bomba_on_btn.place(x=btns_x_pos, y=btns_y_pos)
 
         bomba_off_btn = tk.Button(bomba_frame, text="Apagar Bomba",
-                                  command=self.drone.apagar_bomba,
+                                  command=self.pump_off,
                                   font=Style.TEXT_FONT)
 
         bomba_off_btn.place(x=btns_x_pos+165, y=btns_y_pos)
@@ -457,6 +478,19 @@ class MainFrame(tk.Frame):
         self.longitud.set('{}'.format(longitud))
         self.velocidad.set('{} km/h'.format(velocidad))
 
+    def pump_on(self):
+        if not self.drone.bomba and self.nivel_totalizado < 25:
+            self.drone.encender_bomba()
+            self.time_start_pump = time.time()
+            self.bomba.set('Encendida')
+            self.bomba_output.config(fg=Style.DISPLAY_COLOR)
+
+    def pump_off(self):
+        if self.drone.bomba:
+            self.drone.apagar_bomba()
+            self.bomba.set('Apagada')
+            self.bomba_output.config(fg=Style.OFF_COLOR)
+
     def read_sensors(self):
         """Método para la lectura de sensores"""
         if not self.serial_conn:
@@ -511,21 +545,36 @@ class MainFrame(tk.Frame):
                             parametros[2] else 0
                         conductividad = parametros[3] if numero_datos > 3 and\
                             parametros[3] else 0
-                        nivel = parametros[4] if numero_datos > 4 and \
+                        flujo = parametros[4] if numero_datos > 4 and \
                             parametros[4] else 0
 
-                        if float(nivel) > 25 and self.drone.bomba:
-                            self.drone.apagar_bomba()
+                        # Actualizacion del estado de la bomba
+                        if self.drone.bomba:
+                            self.bomba.set('Encendida')
+                        else:
+                            self.bomba.set('Apagada')
 
                         self.bomba = 'Encendida' if self.drone.bomba \
-                                     else 'Apagada'
 
                         self.temperatura.set('{} °C'.format(temperatura))
                         self.oxigeno.set('{} ppm'.format(oxigeno))
                         self.ph.set('{}'.format(ph))
                         self.conductividad.set('{} uS/cm'
                                                .format(conductividad))
-                        self.nivel.set('{} ml'.format(nivel))
+
+                        # Creación del dato de nivel por medio del flujo
+                        if self.drone.bomba:
+                            nivel = float(flujo) * (time.time() -
+                                                    self.time_start_pump)
+                            self.nivel_totalizado += nivel
+                            nivel_output = round(
+                                Decimal(self.nivel_totalizado), 2)
+                            self.nivel.set('{} ml'.format(
+                                nivel_output))
+
+                            if self.nivel_totalizado > 25 \
+                               and self.drone.bomba:
+                                self.pump_off()
 
                         self.read_gps()
 

@@ -5,6 +5,7 @@ class Style:
     HEADER_FONT = ('Helvetica', 16)
     WHITE = "#fff"
     BLACK = "#000"
+    OFF_COLOR = "#929292"
     DISPLAY_COLOR = "#0f0"
     BACKGROUND_COLOR = "#ecf0f1"
     PRIMARY_COLOR = "#2c3e50"
