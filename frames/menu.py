@@ -17,7 +17,7 @@ class MenuNotebook(ttk.Notebook):
         self.logo.image = logo_img
         self.logo.place(relx=0.5, y=30, anchor=tk.N)
 
-    def almacenar_medicion(self, event):
+    def almacenar_medicion(self):
         """
         Método que almacena el dato y llama al método para actualizar
         tabla de mediciones.

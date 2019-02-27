@@ -151,13 +151,22 @@ class MainFrame(tk.Frame):
 
         bomba_guardar_medicion = tk.Button(sensores_frame,
                                            text="Guardar medición",
-                                           font=Style.TEXT_FONT)
-        bomba_guardar_medicion.event_add('<<click>>', '<Button-1>', '<Key>')
-        bomba_guardar_medicion.bind('<<click>>',
-                                    self.parent.almacenar_medicion)
+                                           font=Style.TEXT_FONT,
+                                           command=self.check_sensores_data)
         bomba_guardar_medicion.place(x=labels_x_pos+125, y=labels_x_pos+150)
 
-        self.parent.after(10, self.read_sensors)
+        self.parent.after(0, self.read_sensors)
+
+    def check_sensores_data(self):
+        if self.temperatura.get() == '' \
+           or self.longitud.get() == '' \
+           or self.ph.get() == '' \
+           or self.conductividad.get() == '':
+            messagebox.showwarning('Sensores no listos!',
+                                   'La conexión a los sensores aún no se ha '
+                                   'establecido.')
+        else:
+            self.parent.almacenar_medicion()
 
     def seccion_gps(self):
         """Sección donde se muestra la posición del dron acuático."""
@@ -225,11 +234,11 @@ class MainFrame(tk.Frame):
     def check_gps_data(self):
         not_allowed = ('', 'n/a')
         if self.latitud.get() not in not_allowed \
-           and self.longitud.get() not in not_allowed:
+           or self.longitud.get() not in not_allowed:
             self.parent.almacenar_posicion()
         else:
-            messagebox.showinfo('GPS no listo', 'Los valores del GPS '
-                                'aún no están listos.')
+            messagebox.showwarning('GPS no listo', 'Los valores del GPS '
+                                   'aún no están listos.')
 
     def seccion_controles(self):
         """Sección donde se controla la dirección del dron"""
