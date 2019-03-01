@@ -11,7 +11,7 @@ from styles.style import Style
 
 
 class Application(tk.Frame):
-    """Aplicación para monitoreo de agua"""
+    """Aplicación para monitoreo de agua Aquatik"""
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -60,7 +60,7 @@ class Application(tk.Frame):
 
     def init_window(self):
         """Método para configurar la ventana"""
-        self.parent.title("Aplicación para Monitoreo del Agua")
+        self.parent.title("Aquatik")
         self.window_width = 700
         self.window_height = 640
         self.parent.geometry('{}x{}+300+0'.format(self.window_width,

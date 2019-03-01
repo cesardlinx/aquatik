@@ -10,12 +10,6 @@ class MenuNotebook(ttk.Notebook):
     def __init__(self, parent, *args, **kwargs):
         ttk.Notebook.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-        # Logo
-        logo_img = tk.PhotoImage(file="imgs/logo.png", master=self.parent)
-
-        self.logo = tk.Label(self.parent, image=logo_img)
-        self.logo.image = logo_img
-        self.logo.place(relx=0.5, y=30, anchor=tk.N)
 
     def almacenar_medicion(self):
         """
