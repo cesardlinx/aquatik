@@ -10,7 +10,7 @@ from gps3.agps3threaded import AGPS3mechanism
 import serial
 from serial.serialutil import SerialException
 
-from styles.main_styles import Style
+from styles.style import Style
 
 from classes.drone import Drone
 from dialogs.sample_dialog import SampleDialog

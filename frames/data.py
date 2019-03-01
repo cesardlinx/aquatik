@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import tkinter as tk
 from tkinter import ttk
-from styles.main_styles import Style
+from styles.style import Style
 from models.medicion import Medicion
 from models.posicion import Posicion
 

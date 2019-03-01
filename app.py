@@ -7,7 +7,7 @@ from frames.data import DataFrame
 from frames.graph import GraphFrame
 from frames.menu import MenuNotebook
 from models.database import Database
-from styles.main_styles import Style
+from styles.style import Style
 
 
 class Application(tk.Frame):

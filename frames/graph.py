@@ -1,5 +1,5 @@
 import tkinter as tk
-from styles.main_styles import Style
+from styles.style import Style
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure

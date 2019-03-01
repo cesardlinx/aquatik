@@ -1,6 +1,6 @@
 import tkinter as tk
 from .dialog import Dialog
-from styles.main_styles import Style
+from styles.style import Style
 
 
 class SampleDialog(Dialog):
