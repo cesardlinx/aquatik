@@ -6,7 +6,7 @@ from .model import Model
 
 
 class Medicion(Model):
-
+    """Mediciones realizadas con los sensores sobre el agua"""
     table_name = 'mediciones'
 
     def __init__(self, *args, **kwargs):

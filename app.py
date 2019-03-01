@@ -50,10 +50,12 @@ class Application(tk.Frame):
         self.parent.config(background=Style.BACKGROUND_COLOR)
 
     def init_gpsd(self):
+        """Inicialización del daemon gpsd"""
         os.system('sudo killall gpsd')
         os.system('sudo gpsd /dev/ttyAMA0 -F /var/run/gpsd.sock')
 
     def destroy_gpsd(self):
+        """Paro de ejecución del daemon gpsd"""
         os.system('sudo killall gpsd')
         self.parent.quit()
 

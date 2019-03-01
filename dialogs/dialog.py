@@ -2,7 +2,11 @@ import tkinter as tk
 
 
 class Dialog(tk.Toplevel):
-
+    """
+    Dialogo principal que tiene las caracteristicas de:
+    - Colocarse frente a la aplicación
+    - No permitir la interacción con la aplicación principal
+    """
     def __init__(self, parent, title=None, **kwargs):
         tk.Toplevel.__init__(self, master=parent, **kwargs)
         self.transient(parent)
@@ -36,19 +40,28 @@ class Dialog(tk.Toplevel):
     # construction hooks
 
     def set_geometry(self):
+        """Dimensiona la pantalla principal"""
         self.parent.update()
         self.geometry('+{}+{}'.format(self.parent.winfo_rootx()+200,
                                       self.parent.winfo_rooty()+200))
 
     def body(self):
-        """Create dialog body. Return widget that should have
-        initial focus.  this method should be overridden"""
+        """
+        Crea el cuerpo del diálogo. regresa un widget el cual
+        debe tener initial focus. Este método debe ser sobreescrito
+        """"
         pass
 
     def buttonbox(self):
+        """
+        Crea los botones del diálogo (Debe ser sobreescrito)
+        """
         pass
 
     def close(self, event=None):
+        """
+        Cierra el dialogo y regresa el focus a la ventana principal
+        """
         # put focus back to the parent window
         self.parent.focus_set()
         self.destroy()

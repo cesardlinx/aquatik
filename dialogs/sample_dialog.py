@@ -4,7 +4,14 @@ from styles.main_styles import Style
 
 
 class SampleDialog(Dialog):
+    """
+    Dialogo que aparecerá cuando se termine de recoger la
+    muestra de agua.
+    """
     def body(self):
+        """Cuerpo del dialogo
+        Contiene una imágen y el texto
+        """
         glass_img = tk.PhotoImage(file="imgs/glass.png", master=self)
         glass = tk.Label(self, image=glass_img)
         glass.image = glass_img
@@ -18,6 +25,10 @@ class SampleDialog(Dialog):
         message_label.pack(padx=10)
 
     def buttonbox(self):
+        """
+        Solo tiene un boton de Ok el cual reseteara el valor del
+        nivel. Si el vaso está lleno se mostrará una advertencia
+        """
         btn_box = tk.Frame(self)
 
         if self.parent.nivel_totalizado < 25:
@@ -46,6 +57,7 @@ class SampleDialog(Dialog):
         btn_box.pack()
 
     def reset_level(self):
+        """Método para resetear el nivel"""
         self.parent.time_start_pump = 0.0
         self.parent.nivel_totalizado = 0.0
         self.parent.nivel.set('0 ml')

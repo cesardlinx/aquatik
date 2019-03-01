@@ -3,7 +3,7 @@ from .database import Database
 
 
 class Model(object):
-
+    """Clase padre para todos los modelos de datos"""
     table_name = ''
 
     @classmethod

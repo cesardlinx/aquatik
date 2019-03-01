@@ -6,7 +6,7 @@ from .model import Model
 
 
 class Posicion(Model):
-
+    """Posición del dron"""
     table_name = 'posiciones'
 
     def __init__(self, *args, **kwargs):

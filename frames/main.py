@@ -69,7 +69,9 @@ class MainFrame(tk.Frame):
         self.seccion_camara()
 
     def init_serial(self):
+        """Inicialización de la comunicación serial"""
         try:
+            # Diálogo con barra de progreso
             self.progress_dialog = tk.Toplevel()
             self.progress_dialog.title('Realizando conexión')
             self.progress_dialog.transient(self)
@@ -439,31 +441,47 @@ class MainFrame(tk.Frame):
                               width=56, height=56)
 
     def camara(self):
+        """
+        Cuando se presiona el botón de "cámara" determina
+        este método determina la imagen a mostrar dependiendo
+        de si la cámara se encuentra encendida o apagada
+        """
         self.camara_btn['image'] = next(self.camaras)
         next(self.camara_methods)()
 
     def camara_on(self):
-        print('camara encendida')
+        """Método para encender la cámara"""
         camera.rotation = 180
         camera.start_preview()
         camera.preview.fullscreen = False
         camera.preview.window = (0, 0, 640, 480)
 
     def camara_off(self):
-        print('camara apagada')
+        """Método para apagar la cámara"""
         camera.stop_preview()
 
     def take_picture(self):
-        print('taking picture')
+        """
+        Método para tomar fotos
+        La imágen se quedará guardada en el escritorio de
+        la raspberry
+        """
         filename = time.strftime("%Y%m%d-%H%M%S")
         camera.capture('/home/pi/Desktop/{}.jpg'.format(filename))
 
     def record(self):
+        """
+        Cuando se presiona el botón de grabar, este método
+        determina la imagen a mostrar dependiendo de si la
+        cámara se encuentra encendida o apagada
+        La grabación se quedará guardada en el escritorio de
+        la raspberry
+        """
         self.record_btn['image'] = next(self.record_imgs)
         next(self.record_methods)()
 
     def start_recording(self):
-        print('start recording')
+        """Método para inicar grabación"""
         self.update()
         self.camara_btn.event_generate('<Enter>')
         self.camara_btn.event_generate('<Button-1>')
@@ -474,7 +492,7 @@ class MainFrame(tk.Frame):
         camera.start_recording('/home/pi/Desktop/{}.h264'.format(filename))
 
     def stop_recording(self):
-        print('stop recording')
+        """Método para finalizar grabación"""
         self.update()
         self.camara_btn.event_generate('<Enter>')
         self.camara_btn.event_generate('<Button-1>')
@@ -496,6 +514,10 @@ class MainFrame(tk.Frame):
                                 'aún no están listos.')
 
     def read_gps(self):
+        """
+        Lectura del sensor gps por medio de gps3
+        gps3 lee del daemon gpsd
+        """
         latitud_raw = self.agps_thread.data_stream.lat
         longitud_raw = self.agps_thread.data_stream.lon
 
@@ -512,6 +534,10 @@ class MainFrame(tk.Frame):
         self.velocidad.set('{} km/h'.format(velocidad))
 
     def pump_on(self):
+        """
+        Se enciende la bomba solo si no ha sido ya activada y
+        el nivel es menor a 25ml
+        """
         if not self.drone.bomba and self.nivel_totalizado < 25:
             self.drone.encender_bomba()
             self.time_start_pump = time.time()
@@ -519,6 +545,9 @@ class MainFrame(tk.Frame):
             self.bomba_output.config(fg=Style.DISPLAY_COLOR)
 
     def pump_off(self):
+        """
+        Método para apagar la bomba
+        """
         if self.drone.bomba:
             self.drone.apagar_bomba()
             self.bomba.set('Apagada')
