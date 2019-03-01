@@ -68,6 +68,10 @@ class Application(tk.Frame):
         self.parent.resizable(width=False, height=False)
         self.parent.config(background=Style.BACKGROUND_COLOR)
 
+        # Icono de aplicación
+        icon = tk.PhotoImage(file='imgs/icon.png')
+        self.parent.tk.call('wm', 'iconphoto', root._w, icon)
+
     def init_gpsd(self):
         """Inicialización del daemon gpsd"""
         os.system('sudo killall gpsd')
