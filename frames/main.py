@@ -30,6 +30,7 @@ class MainFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
+        Style.insert_logo(self)
 
         self.serial_conn = False
         self.drone = Drone()
@@ -126,8 +127,7 @@ class MainFrame(tk.Frame):
         sensores_frame.place(x=sensores_x_pos, y=sensores_y_pos+40)
 
         # Posicionamiento de etiquetas dentro del frame
-        labels_y_pos = 15
-        labels_x_pos = 20
+        labels_x_pos, labels_y_pos = 20, 15
 
         temperatura_label = tk.Label(
             sensores_frame, text="Temperatura:",
@@ -207,8 +207,7 @@ class MainFrame(tk.Frame):
         gps_frame.place(x=gps_x_pos, y=gps_y_pos+40)
 
         # Posicionamiento de etiquetas dentro del frame
-        labels_y_pos = 9
-        labels_x_pos = 50
+        labels_x_pos, labels_y_pos = 50, 9
 
         latitud_label = tk.Label(
             gps_frame, text="Latitud:",

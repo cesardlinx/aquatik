@@ -16,12 +16,12 @@ class DataFrame(tk.Frame):
         self.parent = parent
         self.name = kwargs['name']
         self.init_frame()
+        Style.insert_logo(self)
 
     def init_frame(self):
         """Inicialización de widgets en el frame."""
         # Posicionamiento de la tabla
-        x_pos = 31.5
-        y_pos = 150
+        x_pos, y_pos = 31.5, 150
 
         self.table = ttk.Treeview(self, height=15)
         self.table['show'] = 'headings'

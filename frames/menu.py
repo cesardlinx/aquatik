@@ -35,6 +35,15 @@ class MenuNotebook(ttk.Notebook):
         data_tab = self.winfo_children()[1]
         data_tab.update_table()
 
+        temperatura_tab = self.winfo_children()[3]
+        temperatura_tab.update_graph()
+        ph_tab = self.winfo_children()[4]
+        ph_tab.update_graph()
+        oxigeno_tab = self.winfo_children()[5]
+        oxigeno_tab.update_graph()
+        conductividad_tab = self.winfo_children()[6]
+        conductividad_tab.update_graph()
+
     def almacenar_posicion(self):
         """
         Método que almacena el dato y llama al método para actualizar

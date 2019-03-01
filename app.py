@@ -4,6 +4,7 @@ import os
 import tkinter as tk
 from frames.main import MainFrame
 from frames.data import DataFrame
+from frames.graph import GraphFrame
 from frames.menu import MenuNotebook
 from models.database import Database
 from styles.main_styles import Style
@@ -32,10 +33,28 @@ class Application(tk.Frame):
                                    name='posiciones',
                                    width=self.window_width,
                                    height=self.window_height)
+        temperatura_tab = GraphFrame(self.notebook,
+                                     'temperatura',
+                                     width=self.window_width,
+                                     height=self.window_height)
+        ph_tab = GraphFrame(self.notebook, 'ph', width=self.window_width,
+                            height=self.window_height)
+        oxigeno_tab = GraphFrame(self.notebook,
+                                 'oxigeno',
+                                 width=self.window_width,
+                                 height=self.window_height)
+        conductividad_tab = GraphFrame(self.notebook,
+                                       'conductividad',
+                                       width=self.window_width,
+                                       height=self.window_height)
 
         self.notebook.add(main_tab, text="Monitoreo")
         self.notebook.add(mediciones_tab, text="Mediciones")
         self.notebook.add(posiciones_tab, text="Localizaciones")
+        self.notebook.add(temperatura_tab, text="Temperatura")
+        self.notebook.add(ph_tab, text="pH")
+        self.notebook.add(oxigeno_tab, text="Oxigeno Disuelto")
+        self.notebook.add(conductividad_tab, text="Conductividad")
 
         self.notebook.place(x=0, y=0)
 

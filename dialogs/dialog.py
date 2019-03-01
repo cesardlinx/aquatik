@@ -49,7 +49,7 @@ class Dialog(tk.Toplevel):
         """
         Crea el cuerpo del diálogo. regresa un widget el cual
         debe tener initial focus. Este método debe ser sobreescrito
-        """"
+        """
         pass
 
     def buttonbox(self):

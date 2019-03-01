@@ -29,3 +29,16 @@ class Medicion(Model):
         db.close()
         messagebox.showinfo('Medición almacenada!',
                             'La medición ha sido almacenada exitosamente.')
+
+    @classmethod
+    def get_last(self):
+        """Obtención de los últimas 5 mediciones"""
+        db = Database.connect()
+        cursor = db.cursor()
+        cursor.execute('''
+        SELECT * FROM (SELECT * FROM mediciones ORDER BY IdMedicion DESC
+         limit 10) ORDER BY IdMedicion ASC
+        ''')
+        mediciones = cursor.fetchall()
+        db.close()
+        return mediciones
