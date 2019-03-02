@@ -22,6 +22,18 @@ El formato de string de como los valores son transmitidos hacia la Raspberry es 
 
 `:<temperatura>:<ph>:<conductividad eléctrica>:<oxígeno disuelto>:`
 
+Hardware:
+---------
+
+La Raspberry Pi se encuentra a cargo de los servomotores que mueven al dron por el agua,
+y una pequeña bomba encargada de succionar el agua para tomar la muestra. Los motores
+y la bomba se encuentran conectados a la Raspberry Pi en los siguientes pines del GPIO:
+
+| Elemento   | Pines   |
+| ---------- | :-----: |
+| Bomba      | 21, 23  |
+| Motor Izq  | 29, 31  |
+| Motor Der  | 33, 35  |
 
 Configuración de GPS
 --------------------
