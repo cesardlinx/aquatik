@@ -44,17 +44,17 @@ class Drone:
 
         def left(self):
             """Método para que el dron gire a la izquierda"""
-            GPIO.output(self.motor_A1, GPIO.HIGH)
-            GPIO.output(self.motor_A2, GPIO.LOW)
-            GPIO.output(self.motor_B1, GPIO.HIGH)
-            GPIO.output(self.motor_B2, GPIO.LOW)
-
-        def right(self):
-            """Método para que el dron gire a la derecha"""
             GPIO.output(self.motor_A1, GPIO.LOW)
             GPIO.output(self.motor_A2, GPIO.HIGH)
             GPIO.output(self.motor_B1, GPIO.LOW)
             GPIO.output(self.motor_B2, GPIO.HIGH)
+
+        def right(self):
+            """Método para que el dron gire a la derecha"""
+            GPIO.output(self.motor_A1, GPIO.HIGH)
+            GPIO.output(self.motor_A2, GPIO.LOW)
+            GPIO.output(self.motor_B1, GPIO.HIGH)
+            GPIO.output(self.motor_B2, GPIO.LOW)
 
         def stop(self):
             """Método para parar el dron"""
