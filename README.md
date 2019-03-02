@@ -9,16 +9,19 @@ Mediciones:
 
 Para la obtención de las mediciones la Raspberry Pi debe estar conectada serialmente
 a un Arduino, el mismo que se encarga de la tansmisión de los valores via serial hacia la
-Raspberry Pi
+Raspberry Pi.
 
-El formato de string de como los valores son transmitidos hacia la Raspberry es el siguiente
-
-`:<temperatura>:<ph>:<conductividad eléctrica>:<oxígeno disuelto>:`
+Los parámetros que se miden son:
 
 - Temperatura
 - pH
 - Conductividad Eléctrica
 - Oxígeno Disuelto
+
+El formato de string de como los valores son transmitidos hacia la Raspberry es el siguiente
+
+`:<temperatura>:<ph>:<conductividad eléctrica>:<oxígeno disuelto>:`
+
 
 Configuración de GPS
 --------------------
