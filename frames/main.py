@@ -525,8 +525,8 @@ class MainFrame(tk.Frame):
         else:
             velocidad = 0
 
-        latitud = round(Decimal(latitud_raw), 4)
-        longitud = round(Decimal(longitud_raw), 4)
+        latitud = round(Decimal(latitud_raw), 5)
+        longitud = round(Decimal(longitud_raw), 5)
 
         self.latitud.set('{}'.format(latitud))
         self.longitud.set('{}'.format(longitud))
